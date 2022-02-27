@@ -2,7 +2,8 @@ import fetch from 'isomorphic-fetch';
 
 const SUBGRAPH_URL =
     process.env.SUBGRAPH_URL ||
-    'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-kovan-v2';
+    // 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-kovan-v2';
+    'https://graph-node1.starbank.finance/subgraphs/name/starbank-finance/balancer-v2';
 
 // Returns all public pools
 export async function fetchSubgraphPools(SubgraphUrl: string = '') {

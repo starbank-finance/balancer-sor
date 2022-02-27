@@ -23,6 +23,7 @@ export enum Network {
     GOERLI = 5,
     KOVAN = 42,
     POLYGON = 137,
+    ASTAR = 592,
 }
 
 export const PROVIDER_URLS = {
@@ -30,6 +31,7 @@ export const PROVIDER_URLS = {
     [Network.GOERLI]: `https://goerli.infura.io/v3/${process.env.INFURA}`,
     [Network.KOVAN]: `https://kovan.infura.io/v3/${process.env.INFURA}`,
     [Network.POLYGON]: `https://rpc-mainnet.matic.network`,
+    [Network.ASTAR]: `https://rpc.astar.network:8545`,
 };
 
 export const SUBGRAPH_URLS = {
@@ -41,6 +43,8 @@ export const SUBGRAPH_URLS = {
         'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-kovan-v2',
     [Network.POLYGON]:
         'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2',
+    [Network.ASTAR]:
+        'https://graph-node1.starbank.finance/subgraphs/name/starbank-finance/balancer-v2',
 };
 
 export const ADDRESSES = {
@@ -163,6 +167,43 @@ export const ADDRESSES = {
         },
         DAI: {
             address: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
+            decimals: 18,
+            symbol: 'DAI',
+        },
+    },
+    [Network.ASTAR]: {
+        ASTR: {
+            address: ZERO_ADDRESS,
+            decimals: 18,
+            symbol: 'ASTR',
+        },
+        // BAL: {
+        //     address: '0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3',
+        //     decimals: 18,
+        //     symbol: 'BAL',
+        // },
+        WASTR: {
+            address: '0xAeaaf0e2c81Af264101B9129C00F4440cCF0F720',
+            decimals: 18,
+            symbol: 'WASTR',
+        },
+        USDC: {
+            address: '0x6a2d262D56735DbA19Dd70682B39F6bE9a931D98',
+            decimals: 6,
+            symbol: 'USDC',
+        },
+        WBTC: {
+            address: '0xad543f18cFf85c77E140E3E5E3c3392f6Ba9d5CA',
+            decimals: 8,
+            symbol: 'WBTC',
+        },
+        WETH: {
+            address: '0x81ECac0D6Be0550A00FF064a4f9dd2400585FE9c',
+            decimals: 18,
+            symbol: 'WETH',
+        },
+        DAI: {
+            address: '0x6De33698e9e9b787e09d3Bd7771ef63557E148bb',
             decimals: 18,
             symbol: 'DAI',
         },
@@ -498,25 +539,16 @@ async function makeRelayerTrade(
             userData: swapInfo.swaps[0].userData,
         };
 
-        let limit = swapInfo.returnAmountFromSwaps
-            .times(1.01)
-            .dp(0)
-            .toString(); // Max In
+        let limit = swapInfo.returnAmountFromSwaps.times(1.01).dp(0).toString(); // Max In
         if (swapType === SwapTypes.SwapExactIn)
-            limit = swapInfo.returnAmountFromSwaps
-                .times(0.99)
-                .dp(0)
-                .toString(); // Min return
+            limit = swapInfo.returnAmountFromSwaps.times(0.99).dp(0).toString(); // Min return
 
         let tx = await relayerContract
             .connect(wallet)
             .callStatic.swap(single, funds, limit, deadline, overRides);
         console.log(tx.toString());
         console.log(
-            swapInfo.returnAmountFromSwaps
-                .times(1.01)
-                .dp(0)
-                .toString()
+            swapInfo.returnAmountFromSwaps.times(1.01).dp(0).toString()
         );
     } else {
         let tx = await relayerContract
