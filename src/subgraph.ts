@@ -9,6 +9,7 @@ const SUBGRAPH_URL =
 export async function fetchSubgraphPools(SubgraphUrl: string = '') {
     // if (SubgraphUrl.endsWith('.json')) {
     if (SubgraphUrl.indexOf('.json') != -1) {
+        console.log(`@@fetchSubgraphPools.GET`);
         const response = await fetch(
             SubgraphUrl === '' ? SUBGRAPH_URL : SubgraphUrl,
             {
@@ -53,7 +54,9 @@ export async function fetchSubgraphPools(SubgraphUrl: string = '') {
     `;
 
     console.log(
-        `fetchSubgraphPools: ${SubgraphUrl === '' ? SUBGRAPH_URL : SubgraphUrl}`
+        `fetchSubgraphPools2: ${
+            SubgraphUrl === '' ? SUBGRAPH_URL : SubgraphUrl
+        }`
     );
     const response = await fetch(
         SubgraphUrl === '' ? SUBGRAPH_URL : SubgraphUrl,
