@@ -7,7 +7,23 @@ const SUBGRAPH_URL =
 
 // Returns all public pools
 export async function fetchSubgraphPools(SubgraphUrl: string = '') {
-    // can filter for publicSwap too??
+    if (SubgraphUrl.endsWith('.json')) {
+        const response = await fetch(
+            SubgraphUrl === '' ? SUBGRAPH_URL : SubgraphUrl,
+            {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+
+        const { data } = await response.json();
+
+        return { pools: data.pools };
+    }
+
     const query = `
       {
         pools: pools(first: 1000) {
