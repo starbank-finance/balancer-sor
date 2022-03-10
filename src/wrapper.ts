@@ -125,6 +125,7 @@ export class SOR {
         isOnChain: boolean = true,
         poolsData: SubGraphPoolsBase = { pools: [] }
     ): Promise<boolean> {
+        console.log('@@wrapper.ts:fetchPools..0');
         try {
             // If poolsData has been passed to function these pools should be used
             const isExternalPoolData =
@@ -132,33 +133,48 @@ export class SOR {
 
             let subgraphPools: SubGraphPoolsBase;
 
+            console.log('@@wrapper.ts:fetchPools..1');
             if (isExternalPoolData) {
+                console.log('@@wrapper.ts:fetchPools..2');
                 subgraphPools = JSON.parse(JSON.stringify(poolsData));
+                console.log('@@wrapper.ts:fetchPools..3');
                 // Store as latest pools data
                 if (!this.isUsingPoolsUrl) this.subgraphPools = subgraphPools;
+                console.log('@@wrapper.ts:fetchPools..4');
             } else {
+                console.log('@@wrapper.ts:fetchPools..5');
                 // Retrieve from URL if set otherwise use data passed in constructor
-                if (this.isUsingPoolsUrl)
+                if (this.isUsingPoolsUrl) {
+                    console.log('@@wrapper.ts:fetchPools..6');
                     subgraphPools = await fetchSubgraphPools(this.poolsUrl);
-                else subgraphPools = this.subgraphPools;
+                } else {
+                    console.log('@@wrapper.ts:fetchPools..7');
+                    subgraphPools = this.subgraphPools;
+                }
+                console.log('@@wrapper.ts:fetchPools..8');
             }
 
+            console.log('@@wrapper.ts:fetchPools..9');
             let previousStringify = JSON.stringify(this.onChainBalanceCache); // Used for compare
 
+            console.log('@@wrapper.ts:fetchPools..10');
             // Get latest on-chain balances (returns data in string/normalized format)
             this.onChainBalanceCache = await this.fetchOnChainBalances(
                 subgraphPools,
                 isOnChain
             );
 
+            console.log('@@wrapper.ts:fetchPools..11');
             // If new pools are different from previous then any previous processed data is out of date so clear
             if (
                 previousStringify !== JSON.stringify(this.onChainBalanceCache)
             ) {
+                console.log('@@wrapper.ts:fetchPools..12');
                 this.processedDataCache = {};
             }
 
             this.finishedFetchingOnChain = true;
+            console.log('@@wrapper.ts:fetchPools..13');
 
             return true;
         } catch (err) {
