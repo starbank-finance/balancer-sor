@@ -185,10 +185,13 @@ class SOR {
     */
     fetchOnChainBalances(subgraphPools, isOnChain = true) {
         return __awaiter(this, void 0, void 0, function*() {
+            console.log('@@wrapper.ts: fetchOnChainBalances 1');
             if (subgraphPools.pools.length === 0) {
+                console.log('@@wrapper.ts: fetchOnChainBalances 2 ');
                 console.error('ERROR: No Pools To Fetch.');
                 return { pools: [] };
             }
+            console.log('@@wrapper.ts: fetchOnChainBalances 3 ');
             // Allows for testing
             if (!isOnChain) {
                 console.log(
@@ -196,6 +199,7 @@ class SOR {
                 );
                 return subgraphPools;
             }
+            console.log('@@wrapper.ts: fetchOnChainBalances 4 ');
             // This will return in normalized/string format
             const onChainPools = yield index_1.getOnChainBalances(
                 subgraphPools,
@@ -203,8 +207,10 @@ class SOR {
                 index_1.VAULTADDR[this.chainId],
                 this.provider
             );
+            console.log('@@wrapper.ts: fetchOnChainBalances 5');
             // Error with multicall
             if (!onChainPools) return { pools: [] };
+            console.log('@@wrapper.ts: fetchOnChainBalances 6 ');
             return onChainPools;
         });
     }

@@ -195,11 +195,14 @@ export class SOR {
         subgraphPools: SubGraphPoolsBase,
         isOnChain: boolean = true
     ): Promise<SubGraphPoolsBase> {
+        console.log('@@wrapper.ts: fetchOnChainBalances 1');
         if (subgraphPools.pools.length === 0) {
+            console.log('@@wrapper.ts: fetchOnChainBalances 2 ');
             console.error('ERROR: No Pools To Fetch.');
             return { pools: [] };
         }
 
+        console.log('@@wrapper.ts: fetchOnChainBalances 3 ');
         // Allows for testing
         if (!isOnChain) {
             console.log(
@@ -208,6 +211,7 @@ export class SOR {
             return subgraphPools;
         }
 
+        console.log('@@wrapper.ts: fetchOnChainBalances 4 ');
         // This will return in normalized/string format
         const onChainPools: SubGraphPoolsBase = await getOnChainBalances(
             subgraphPools,
@@ -215,9 +219,11 @@ export class SOR {
             VAULTADDR[this.chainId],
             this.provider
         );
+        console.log('@@wrapper.ts: fetchOnChainBalances 5');
 
         // Error with multicall
         if (!onChainPools) return { pools: [] };
+        console.log('@@wrapper.ts: fetchOnChainBalances 6 ');
 
         return onChainPools;
     }
