@@ -7,6 +7,7 @@ const SUBGRAPH_URL =
 
 // Returns all public pools
 export async function fetchSubgraphPools(SubgraphUrl: string = '') {
+    console.log(`@@fetchSubgraphPools.SubgraphUrl=`, SubgraphUrl);
     // if (SubgraphUrl.endsWith('.json')) {
     if (SubgraphUrl.indexOf('.json') != -1) {
         console.log(`@@fetchSubgraphPools.GET`);
