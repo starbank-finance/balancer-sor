@@ -152,7 +152,12 @@ export class SOR {
                     console.log('@@wrapper.ts:fetchPools..7');
                     subgraphPools = this.subgraphPools;
                 }
+
                 console.log('@@wrapper.ts:fetchPools..8');
+                console.log(
+                    '@@wrapper.ts:fetchPools..8.1 subgraphPools = ',
+                    subgraphPools
+                );
             }
 
             console.log('@@wrapper.ts:fetchPools..9');
@@ -196,6 +201,14 @@ export class SOR {
         isOnChain: boolean = true
     ): Promise<SubGraphPoolsBase> {
         console.log('@@wrapper.ts: fetchOnChainBalances 1');
+        console.log(
+            '@@wrapper.ts: fetchOnChainBalances subgraphPools = ',
+            subgraphPools
+        );
+        console.log(
+            '@@wrapper.ts: fetchOnChainBalances isOnChain = ',
+            isOnChain
+        );
         if (subgraphPools.pools.length === 0) {
             console.log('@@wrapper.ts: fetchOnChainBalances 2 ');
             console.error('ERROR: No Pools To Fetch.');

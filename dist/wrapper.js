@@ -147,6 +147,10 @@ class SOR {
                         subgraphPools = this.subgraphPools;
                     }
                     console.log('@@wrapper.ts:fetchPools..8');
+                    console.log(
+                        '@@wrapper.ts:fetchPools..8.1 subgraphPools = ',
+                        subgraphPools
+                    );
                 }
                 console.log('@@wrapper.ts:fetchPools..9');
                 let previousStringify = JSON.stringify(
@@ -186,6 +190,14 @@ class SOR {
     fetchOnChainBalances(subgraphPools, isOnChain = true) {
         return __awaiter(this, void 0, void 0, function*() {
             console.log('@@wrapper.ts: fetchOnChainBalances 1');
+            console.log(
+                '@@wrapper.ts: fetchOnChainBalances subgraphPools = ',
+                subgraphPools
+            );
+            console.log(
+                '@@wrapper.ts: fetchOnChainBalances isOnChain = ',
+                isOnChain
+            );
             if (subgraphPools.pools.length === 0) {
                 console.log('@@wrapper.ts: fetchOnChainBalances 2 ');
                 console.error('ERROR: No Pools To Fetch.');
