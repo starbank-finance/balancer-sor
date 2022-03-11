@@ -62,8 +62,11 @@ function fetchSubgraphPools(SubgraphUrl = '') {
                     },
                 }
             );
+            console.log(`@@fetchSubgraphPools.response = `, response);
             const { data } = yield response.json();
-            return { pools: data.pools };
+            console.log(`@@fetchSubgraphPools.data = `, data);
+            return data;
+            // return { pools: data.pools };
         }
         const query = `
       {

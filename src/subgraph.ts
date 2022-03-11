@@ -21,10 +21,12 @@ export async function fetchSubgraphPools(SubgraphUrl: string = '') {
                 },
             }
         );
+        console.log(`@@fetchSubgraphPools.response = `, response);
 
         const { data } = await response.json();
-
-        return { pools: data.pools };
+        console.log(`@@fetchSubgraphPools.data = `, data);
+        return data;
+        // return { pools: data.pools };
     }
 
     const query = `

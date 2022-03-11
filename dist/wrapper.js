@@ -141,6 +141,7 @@ class SOR {
                         subgraphPools = yield index_1.fetchSubgraphPools(
                             this.poolsUrl
                         );
+                        console.log('@@subgraphPools= ', subgraphPools);
                     } else {
                         console.log('@@wrapper.ts:fetchPools..7');
                         subgraphPools = this.subgraphPools;

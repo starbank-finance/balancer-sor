@@ -147,6 +147,7 @@ export class SOR {
                 if (this.isUsingPoolsUrl) {
                     console.log('@@wrapper.ts:fetchPools..6');
                     subgraphPools = await fetchSubgraphPools(this.poolsUrl);
+                    console.log('@@subgraphPools= ', subgraphPools);
                 } else {
                     console.log('@@wrapper.ts:fetchPools..7');
                     subgraphPools = this.subgraphPools;

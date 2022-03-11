@@ -1,3 +1,1 @@
-export declare function fetchSubgraphPools(SubgraphUrl?: string): Promise<{
-    pools: any;
-}>;
+export declare function fetchSubgraphPools(SubgraphUrl?: string): Promise<any>;
