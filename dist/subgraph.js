@@ -48,7 +48,23 @@ const SUBGRAPH_URL =
 // Returns all public pools
 function fetchSubgraphPools(SubgraphUrl = '') {
     return __awaiter(this, void 0, void 0, function*() {
-        // can filter for publicSwap too??
+        console.log(`@@fetchSubgraphPools.SubgraphUrl=`, SubgraphUrl);
+        // if (SubgraphUrl.endsWith('.json')) {
+        if (SubgraphUrl.indexOf('.json') != -1) {
+            console.log(`@@fetchSubgraphPools.GET`);
+            const response = yield isomorphic_fetch_1.default(
+                SubgraphUrl === '' ? SUBGRAPH_URL : SubgraphUrl,
+                {
+                    method: 'GET',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            const { data } = yield response.json();
+            return { pools: data.pools };
+        }
         const query = `
       {
         pools: pools(first: 1000) {
@@ -76,7 +92,7 @@ function fetchSubgraphPools(SubgraphUrl = '') {
       }
     `;
         console.log(
-            `fetchSubgraphPools: ${
+            `fetchSubgraphPools2: ${
                 SubgraphUrl === '' ? SUBGRAPH_URL : SubgraphUrl
             }`
         );
