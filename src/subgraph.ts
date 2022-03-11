@@ -17,14 +17,14 @@ export async function fetchSubgraphPools(SubgraphUrl: string = '') {
                 method: 'GET',
                 headers: {
                     Accept: 'application/json',
-                    'Content-Type': 'application/json',
+                    // 'Content-Type': 'application/json',
                 },
             }
         );
-        console.log(`@@fetchSubgraphPools.response = `, response);
+        // console.log(`@@fetchSubgraphPools.response = `, response);
 
-        const { data } = await response.json();
-        console.log(`@@fetchSubgraphPools.data = `, data);
+        const data = await response.json();
+        // console.log(`@@fetchSubgraphPools.data = `, data);
         return data;
         // return { pools: data.pools };
     }

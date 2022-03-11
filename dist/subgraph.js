@@ -58,13 +58,12 @@ function fetchSubgraphPools(SubgraphUrl = '') {
                     method: 'GET',
                     headers: {
                         Accept: 'application/json',
-                        'Content-Type': 'application/json',
                     },
                 }
             );
-            console.log(`@@fetchSubgraphPools.response = `, response);
-            const { data } = yield response.json();
-            console.log(`@@fetchSubgraphPools.data = `, data);
+            // console.log(`@@fetchSubgraphPools.response = `, response);
+            const data = yield response.json();
+            // console.log(`@@fetchSubgraphPools.data = `, data);
             return data;
             // return { pools: data.pools };
         }
