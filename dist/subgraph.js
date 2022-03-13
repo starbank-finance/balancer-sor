@@ -49,10 +49,10 @@ const SUBGRAPH_URL =
 // Returns all public pools
 function fetchSubgraphPools(SubgraphUrl = '') {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log(`@@fetchSubgraphPools.SubgraphUrl=`, SubgraphUrl);
+        console.log(`@@@@fetchSubgraphPools.SubgraphUrl=`, SubgraphUrl);
         // if (SubgraphUrl.endsWith('.json')) {
-        if (SubgraphUrl.indexOf('.json') != -1) {
-            console.log(`@@fetchSubgraphPools.GET`);
+        if (SubgraphUrl.indexOf('.json') !== -1) {
+            console.log(`@@@@fetchSubgraphPools.GET`);
             const response = yield isomorphic_fetch_1.default(
                 SubgraphUrl === '' ? SUBGRAPH_URL : SubgraphUrl,
                 {
@@ -63,7 +63,7 @@ function fetchSubgraphPools(SubgraphUrl = '') {
                     },
                 }
             );
-            // console.log(`@@fetchSubgraphPools.response = `, response);
+            console.log(`@@fetchSubgraphPools.response = `, response);
             const data = yield response.json();
             // console.log(`@@fetchSubgraphPools.data = `, data);
             return data;

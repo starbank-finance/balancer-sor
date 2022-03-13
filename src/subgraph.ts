@@ -7,10 +7,10 @@ const SUBGRAPH_URL =
 
 // Returns all public pools
 export async function fetchSubgraphPools(SubgraphUrl: string = '') {
-    console.log(`@@fetchSubgraphPools.SubgraphUrl=`, SubgraphUrl);
+    console.log(`@@@@fetchSubgraphPools.SubgraphUrl=`, SubgraphUrl);
     // if (SubgraphUrl.endsWith('.json')) {
-    if (SubgraphUrl.indexOf('.json') != -1) {
-        console.log(`@@fetchSubgraphPools.GET`);
+    if (SubgraphUrl.indexOf('.json') !== -1) {
+        console.log(`@@@@fetchSubgraphPools.GET`);
         const response = await fetch(
             SubgraphUrl === '' ? SUBGRAPH_URL : SubgraphUrl,
             {
@@ -21,7 +21,7 @@ export async function fetchSubgraphPools(SubgraphUrl: string = '') {
                 },
             }
         );
-        // console.log(`@@fetchSubgraphPools.response = `, response);
+        console.log(`@@fetchSubgraphPools.response = `, response);
 
         const data = await response.json();
         // console.log(`@@fetchSubgraphPools.data = `, data);
