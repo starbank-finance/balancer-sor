@@ -125,7 +125,7 @@ export class SOR {
         isOnChain: boolean = true,
         poolsData: SubGraphPoolsBase = { pools: [] }
     ): Promise<boolean> {
-        console.log('@@wrapper.ts:fetchPools..0');
+        console.log('@@@@wrapper.ts:fetchPools..0');
         try {
             // If poolsData has been passed to function these pools should be used
             const isExternalPoolData =
@@ -133,34 +133,34 @@ export class SOR {
 
             let subgraphPools: SubGraphPoolsBase;
 
-            console.log('@@wrapper.ts:fetchPools..1');
+            console.log('@@@@wrapper.ts:fetchPools..1');
             if (isExternalPoolData) {
-                console.log('@@wrapper.ts:fetchPools..2');
+                console.log('@@@@wrapper.ts:fetchPools..2');
                 subgraphPools = JSON.parse(JSON.stringify(poolsData));
-                console.log('@@wrapper.ts:fetchPools..3');
+                console.log('@@@@wrapper.ts:fetchPools..3');
                 // Store as latest pools data
                 if (!this.isUsingPoolsUrl) this.subgraphPools = subgraphPools;
-                console.log('@@wrapper.ts:fetchPools..4');
+                console.log('@@@@wrapper.ts:fetchPools..4');
             } else {
-                console.log('@@wrapper.ts:fetchPools..5');
+                console.log('@@@@wrapper.ts:fetchPools..5');
                 // Retrieve from URL if set otherwise use data passed in constructor
                 if (this.isUsingPoolsUrl) {
                     console.log('@@wrapper.ts:fetchPools..6');
                     subgraphPools = await fetchSubgraphPools(this.poolsUrl);
-                    console.log('@@subgraphPools= ', subgraphPools);
+                    console.log('@@@@subgraphPools= ', subgraphPools);
                 } else {
-                    console.log('@@wrapper.ts:fetchPools..7');
+                    console.log('@@@@wrapper.ts:fetchPools..7');
                     subgraphPools = this.subgraphPools;
                 }
 
-                console.log('@@wrapper.ts:fetchPools..8');
+                console.log('@@@@wrapper.ts:fetchPools..8');
                 console.log(
-                    '@@wrapper.ts:fetchPools..8.1 subgraphPools = ',
+                    '@@@@wrapper.ts:fetchPools..8.1 subgraphPools = ',
                     subgraphPools
                 );
             }
 
-            console.log('@@wrapper.ts:fetchPools..9');
+            console.log('@@@@wrapper.ts:fetchPools..9');
             let previousStringify = JSON.stringify(this.onChainBalanceCache); // Used for compare
 
             console.log('@@wrapper.ts:fetchPools..10');
@@ -170,17 +170,17 @@ export class SOR {
                 isOnChain
             );
 
-            console.log('@@wrapper.ts:fetchPools..11');
+            console.log('@@@@wrapper.ts:fetchPools..11');
             // If new pools are different from previous then any previous processed data is out of date so clear
             if (
                 previousStringify !== JSON.stringify(this.onChainBalanceCache)
             ) {
-                console.log('@@wrapper.ts:fetchPools..12');
+                console.log('@@@@wrapper.ts:fetchPools..12');
                 this.processedDataCache = {};
             }
 
             this.finishedFetchingOnChain = true;
-            console.log('@@wrapper.ts:fetchPools..13');
+            console.log('@@@@wrapper.ts:fetchPools..13');
 
             return true;
         } catch (err) {
@@ -188,7 +188,7 @@ export class SOR {
             this.finishedFetchingOnChain = false;
             this.onChainBalanceCache = { pools: [] };
             this.processedDataCache = {};
-            console.error(`Error: fetchPools(): ${err.message}`);
+            console.error(`@@@@Error: fetchPools(): ${err.message}`);
             return false;
         }
     }
@@ -277,7 +277,7 @@ export class SOR {
             let pools = JSON.parse(JSON.stringify(this.onChainBalanceCache));
             if (!(swapOptions.poolTypeFilter === PoolFilter.All))
                 pools.pools = pools.pools.filter(
-                    p => p.poolType === swapOptions.poolTypeFilter
+                    (p) => p.poolType === swapOptions.poolTypeFilter
                 );
 
             if (isLidoStableSwap(this.chainId, tokenIn, tokenOut)) {
@@ -343,9 +343,10 @@ export class SOR {
         let pools: PoolDictionary, paths: NewPath[], marketSp: BigNumber;
 
         // If token pair has been processed before that info can be reused to speed up execution
-        let cache = this.processedDataCache[
-            `${tokenIn}${tokenOut}${swapType}${currentBlockTimestamp}`
-        ];
+        let cache =
+            this.processedDataCache[
+                `${tokenIn}${tokenOut}${swapType}${currentBlockTimestamp}`
+            ];
 
         // useProcessCache can be false to force fresh processing of paths/prices
         if (!useProcessCache || !cache) {
