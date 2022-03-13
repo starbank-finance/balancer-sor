@@ -1,16 +1,24 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const config_1 = require("./config");
-const types_1 = require("./types");
-const weightedPool_1 = require("./pools/weightedPool/weightedPool");
-const stablePool_1 = require("./pools/stablePool/stablePool");
-const elementPool_1 = require("./pools/elementPool/elementPool");
-const metaStablePool_1 = require("./pools/metaStablePool/metaStablePool");
-const bmath_1 = require("./bmath");
-const disabled_tokens_json_1 = __importDefault(require("./disabled-tokens.json"));
+'use strict';
+var __importDefault =
+    (this && this.__importDefault) ||
+    function (mod) {
+        return mod && mod.__esModule ? mod : { default: mod };
+    };
+Object.defineProperty(exports, '__esModule', { value: true });
+exports.filterHopPools =
+    exports.parseNewPool =
+    exports.filterPoolsOfInterest =
+        void 0;
+const config_1 = require('./config');
+const types_1 = require('./types');
+const weightedPool_1 = require('./pools/weightedPool/weightedPool');
+const stablePool_1 = require('./pools/stablePool/stablePool');
+const elementPool_1 = require('./pools/elementPool/elementPool');
+const metaStablePool_1 = require('./pools/metaStablePool/metaStablePool');
+const bmath_1 = require('./bmath');
+const disabled_tokens_json_1 = __importDefault(
+    require('./disabled-tokens.json')
+);
 /*
 The main purpose of this function is to:
 - filter to  allPools to pools that have:
@@ -22,10 +30,17 @@ As we're looping all here, it also does a number of other things to avoid unnece
 - parsePoolPairData for Direct pools
 - store token decimals for future use
 */
-function filterPoolsOfInterest(allPools, tokenIn, tokenOut, maxPools, disabledOptions = {
-    isOverRide: false,
-    disabledTokens: [],
-}, currentBlockTimestamp = 0) {
+function filterPoolsOfInterest(
+    allPools,
+    tokenIn,
+    tokenOut,
+    maxPools,
+    disabledOptions = {
+        isOverRide: false,
+        disabledTokens: [],
+    },
+    currentBlockTimestamp = 0
+) {
     const poolsDictionary = {};
     // If pool contains token add all its tokens to direct list
     // Multi-hop trades: we find the best pools that connect tokenIn and tokenOut through a multi-hop (intermediate) token
@@ -36,23 +51,23 @@ function filterPoolsOfInterest(allPools, tokenIn, tokenOut, maxPools, disabledOp
     let disabledTokens = disabled_tokens_json_1.default.tokens;
     if (disabledOptions.isOverRide)
         disabledTokens = disabledOptions.disabledTokens;
-    allPools.forEach(pool => {
+    allPools.forEach((pool) => {
         if (pool.tokensList.length === 0 || pool.tokens[0].balance === '0') {
             return;
         }
         const newPool = parseNewPool(pool, currentBlockTimestamp);
-        if (!newPool)
-            return;
+        if (!newPool) return;
         let tokenListSet = new Set(pool.tokensList);
         // Depending on env file, we add the BPT as well as
         // we can join/exit as part of the multihop
-        if (config_1.ALLOW_ADD_REMOVE)
-            tokenListSet.add(pool.address);
-        disabledTokens.forEach(token => tokenListSet.delete(token.address));
+        if (config_1.ALLOW_ADD_REMOVE) tokenListSet.add(pool.address);
+        disabledTokens.forEach((token) => tokenListSet.delete(token.address));
         // This is a direct pool as has both tokenIn and tokenOut
-        if ((tokenListSet.has(tokenIn) && tokenListSet.has(tokenOut)) ||
+        if (
+            (tokenListSet.has(tokenIn) && tokenListSet.has(tokenOut)) ||
             (tokenListSet.has(tokenIn.toLowerCase()) &&
-                tokenListSet.has(tokenOut.toLowerCase()))) {
+                tokenListSet.has(tokenOut.toLowerCase()))
+        ) {
             newPool.setTypeForSwap(types_1.SwapPairType.Direct);
             // parsePoolPairData for Direct pools as it avoids having to loop later
             newPool.parsePoolPairData(tokenIn, tokenOut);
@@ -69,8 +84,7 @@ function filterPoolsOfInterest(allPools, tokenIn, tokenOut, maxPools, disabledOp
                 ]);
                 newPool.setTypeForSwap(types_1.SwapPairType.HopIn);
                 poolsDictionary[pool.id] = newPool;
-            }
-            else if (!containsTokenIn && containsTokenOut) {
+            } else if (!containsTokenIn && containsTokenOut) {
                 tokenOutPairedTokens = new Set([
                     ...tokenOutPairedTokens,
                     ...tokenListSet,
@@ -81,7 +95,9 @@ function filterPoolsOfInterest(allPools, tokenIn, tokenOut, maxPools, disabledOp
         }
     });
     // We find the intersection of the two previous sets so we can trade tokenIn for tokenOut with 1 multi-hop
-    const hopTokensSet = [...tokenInPairedTokens].filter(x => tokenOutPairedTokens.has(x));
+    const hopTokensSet = [...tokenInPairedTokens].filter((x) =>
+        tokenOutPairedTokens.has(x)
+    );
     // Transform set into Array
     const hopTokens = [...hopTokensSet];
     return [poolsDictionary, hopTokens];
@@ -90,22 +106,60 @@ exports.filterPoolsOfInterest = filterPoolsOfInterest;
 function parseNewPool(pool, currentBlockTimestamp = 0) {
     // We're not interested in any pools which don't allow swapping
     // (Explicit check for false as many of the tests omit this flag)
-    if (pool.swapEnabled === false)
-        return undefined;
+    if (pool.swapEnabled === false) return undefined;
     let newPool;
-    if (pool.poolType === 'Weighted' || pool.poolType === 'LiquidityBootstrapping' || pool.poolType === 'Investment')
-        newPool = new weightedPool_1.WeightedPool(pool.id, pool.address, pool.swapFee, pool.totalWeight, pool.totalShares, pool.tokens, pool.tokensList);
+    if (
+        pool.poolType === 'Weighted' ||
+        pool.poolType === 'LiquidityBootstrapping' ||
+        pool.poolType === 'Investment'
+    )
+        newPool = new weightedPool_1.WeightedPool(
+            pool.id,
+            pool.address,
+            pool.swapFee,
+            pool.totalWeight,
+            pool.totalShares,
+            pool.tokens,
+            pool.tokensList
+        );
     else if (pool.poolType === 'Stable')
-        newPool = new stablePool_1.StablePool(pool.id, pool.address, pool.amp, pool.swapFee, pool.totalShares, pool.tokens, pool.tokensList);
+        newPool = new stablePool_1.StablePool(
+            pool.id,
+            pool.address,
+            pool.amp,
+            pool.swapFee,
+            pool.totalShares,
+            pool.tokens,
+            pool.tokensList
+        );
     else if (pool.poolType === 'Element') {
-        newPool = new elementPool_1.ElementPool(pool.id, pool.address, pool.swapFee, pool.totalShares, pool.tokens, pool.tokensList, pool.expiryTime, pool.unitSeconds, pool.principalToken, pool.baseToken);
+        newPool = new elementPool_1.ElementPool(
+            pool.id,
+            pool.address,
+            pool.swapFee,
+            pool.totalShares,
+            pool.tokens,
+            pool.tokensList,
+            pool.expiryTime,
+            pool.unitSeconds,
+            pool.principalToken,
+            pool.baseToken
+        );
         newPool.setCurrentBlockTimestamp(currentBlockTimestamp);
-    }
-    else if (pool.poolType === 'MetaStable') {
-        newPool = new metaStablePool_1.MetaStablePool(pool.id, pool.address, pool.amp, pool.swapFee, pool.totalShares, pool.tokens, pool.tokensList);
-    }
-    else {
-        console.error(`Unknown pool type or type field missing: ${pool.poolType} ${pool.id}`);
+    } else if (pool.poolType === 'MetaStable') {
+        newPool = new metaStablePool_1.MetaStablePool(
+            pool.id,
+            pool.address,
+            pool.amp,
+            pool.swapFee,
+            pool.totalShares,
+            pool.tokens,
+            pool.tokensList
+        );
+    } else {
+        console.error(
+            `Unknown pool type or type field missing: ${pool.poolType} ${pool.id}`
+        );
         return undefined;
     }
     return newPool;
@@ -122,11 +176,17 @@ function filterHopPools(tokenIn, tokenOut, hopTokens, poolsOfInterest) {
     // No multihop pool but still need to create paths for direct pools
     if (hopTokens.length === 0) {
         for (let id in poolsOfInterest) {
-            if (poolsOfInterest[id].swapPairType !== types_1.SwapPairType.Direct) {
+            if (
+                poolsOfInterest[id].swapPairType !== types_1.SwapPairType.Direct
+            ) {
                 delete poolsOfInterest[id];
                 continue;
             }
-            const path = createDirectPath(poolsOfInterest[id], tokenIn, tokenOut);
+            const path = createDirectPath(
+                poolsOfInterest[id],
+                tokenIn,
+                tokenOut
+            );
             paths.push(path);
             filteredPoolsOfInterest[id] = poolsOfInterest[id];
         }
@@ -151,33 +211,45 @@ function filterHopPools(tokenIn, tokenOut, hopTokens, poolsOfInterest) {
             let tokenListSet = new Set(pool.tokensList);
             // Depending on env file, we add the BPT as well as
             // we can join/exit as part of the multihop
-            if (config_1.ALLOW_ADD_REMOVE)
-                tokenListSet.add(pool.address);
+            if (config_1.ALLOW_ADD_REMOVE) tokenListSet.add(pool.address);
             // MAKE THIS A FLAG IN FILTER?
             // If pool doesn't have  hopTokens[i] then ignore
-            if (!tokenListSet.has(hopTokens[i]))
-                continue;
+            if (!tokenListSet.has(hopTokens[i])) continue;
             if (pool.swapPairType === types_1.SwapPairType.HopIn) {
-                const poolPairData = pool.parsePoolPairData(tokenIn, hopTokens[i]);
+                const poolPairData = pool.parsePoolPairData(
+                    tokenIn,
+                    hopTokens[i]
+                );
                 // const normalizedLiquidity = pool.getNormalizedLiquidity(tokenIn, hopTokens[i]);
-                const normalizedLiquidity = pool.getNormalizedLiquidity(poolPairData);
+                const normalizedLiquidity =
+                    pool.getNormalizedLiquidity(poolPairData);
                 // Cannot be strictly greater otherwise highestNormalizedLiquidityPoolId = 0 if hopTokens[i] balance is 0 in this pool.
-                if (normalizedLiquidity.isGreaterThanOrEqualTo(highestNormalizedLiquidityFirst)) {
+                if (
+                    normalizedLiquidity.isGreaterThanOrEqualTo(
+                        highestNormalizedLiquidityFirst
+                    )
+                ) {
                     highestNormalizedLiquidityFirst = normalizedLiquidity;
                     highestNormalizedLiquidityFirstPoolId = id;
                 }
-            }
-            else if (pool.swapPairType === types_1.SwapPairType.HopOut) {
-                const poolPairData = pool.parsePoolPairData(hopTokens[i], tokenOut);
+            } else if (pool.swapPairType === types_1.SwapPairType.HopOut) {
+                const poolPairData = pool.parsePoolPairData(
+                    hopTokens[i],
+                    tokenOut
+                );
                 // const normalizedLiquidity = pool.getNormalizedLiquidity(hopTokens[i], tokenOut);
-                const normalizedLiquidity = pool.getNormalizedLiquidity(poolPairData);
+                const normalizedLiquidity =
+                    pool.getNormalizedLiquidity(poolPairData);
                 // Cannot be strictly greater otherwise highestNormalizedLiquidityPoolId = 0 if hopTokens[i] balance is 0 in this pool.
-                if (normalizedLiquidity.isGreaterThanOrEqualTo(highestNormalizedLiquiditySecond)) {
+                if (
+                    normalizedLiquidity.isGreaterThanOrEqualTo(
+                        highestNormalizedLiquiditySecond
+                    )
+                ) {
                     highestNormalizedLiquiditySecond = normalizedLiquidity;
                     highestNormalizedLiquiditySecondPoolId = id;
                 }
-            }
-            else {
+            } else {
                 // Unknown type
                 continue;
             }
@@ -187,7 +259,13 @@ function filterHopPools(tokenIn, tokenOut, hopTokens, poolsOfInterest) {
             poolsOfInterest[highestNormalizedLiquidityFirstPoolId];
         filteredPoolsOfInterest[highestNormalizedLiquiditySecondPoolId] =
             poolsOfInterest[highestNormalizedLiquiditySecondPoolId];
-        const path = createMultihopPath(poolsOfInterest[highestNormalizedLiquidityFirstPoolId], poolsOfInterest[highestNormalizedLiquiditySecondPoolId], tokenIn, hopTokens[i], tokenOut);
+        const path = createMultihopPath(
+            poolsOfInterest[highestNormalizedLiquidityFirstPoolId],
+            poolsOfInterest[highestNormalizedLiquiditySecondPoolId],
+            tokenIn,
+            hopTokens[i],
+            tokenOut
+        );
         paths.push(path);
     }
     return [filteredPoolsOfInterest, paths];
@@ -211,7 +289,13 @@ function createDirectPath(pool, tokenIn, tokenOut) {
     };
     return path;
 }
-function createMultihopPath(firstPool, secondPool, tokenIn, hopToken, tokenOut) {
+function createMultihopPath(
+    firstPool,
+    secondPool,
+    tokenIn,
+    hopToken,
+    tokenOut
+) {
     const swap1 = {
         pool: firstPool.id,
         tokenIn: tokenIn,

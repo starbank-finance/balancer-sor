@@ -1,5 +1,6 @@
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
+exports.VAULTADDR = exports.MULTIADDR = exports.WETHADDR = void 0;
 exports.WETHADDR = {
     1: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
     5: '0x9A1000D492d40bfccbc03f413A48F5B6516Ec0Fd',

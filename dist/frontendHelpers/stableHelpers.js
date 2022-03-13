@@ -1,14 +1,51 @@
-"use strict";
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const bignumber_1 = require("../utils/bignumber");
-const stableMath = __importStar(require("../pools/stablePool/stableMath"));
+'use strict';
+var __createBinding =
+    (this && this.__createBinding) ||
+    (Object.create
+        ? function (o, m, k, k2) {
+              if (k2 === undefined) k2 = k;
+              Object.defineProperty(o, k2, {
+                  enumerable: true,
+                  get: function () {
+                      return m[k];
+                  },
+              });
+          }
+        : function (o, m, k, k2) {
+              if (k2 === undefined) k2 = k;
+              o[k2] = m[k];
+          });
+var __setModuleDefault =
+    (this && this.__setModuleDefault) ||
+    (Object.create
+        ? function (o, v) {
+              Object.defineProperty(o, 'default', {
+                  enumerable: true,
+                  value: v,
+              });
+          }
+        : function (o, v) {
+              o['default'] = v;
+          });
+var __importStar =
+    (this && this.__importStar) ||
+    function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null)
+            for (var k in mod)
+                if (
+                    k !== 'default' &&
+                    Object.prototype.hasOwnProperty.call(mod, k)
+                )
+                    __createBinding(result, mod, k);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+Object.defineProperty(exports, '__esModule', { value: true });
+exports.BPTForTokensZeroPriceImpact = void 0;
+const bignumber_1 = require('../utils/bignumber');
+const stableMath = __importStar(require('../pools/stablePool/stableMath'));
 /////////
 /// UI Helpers
 /////////
@@ -16,8 +53,13 @@ const stableMath = __importStar(require("../pools/stablePool/stableMath"));
 // This function is the same regardless of whether we are considering
 // an Add or Remove liquidity operation: The spot prices of BPT in tokens
 // are the same regardless.
-function BPTForTokensZeroPriceImpact(allBalances, decimals, amounts, // This has to have the same lenght as allBalances
-bptTotalSupply, amp) {
+function BPTForTokensZeroPriceImpact(
+    allBalances,
+    decimals,
+    amounts, // This has to have the same lenght as allBalances
+    bptTotalSupply,
+    amp
+) {
     if (allBalances.length != amounts.length)
         throw 'allBalances and amounts have to have same length';
     let zero = new bignumber_1.BigNumber(0);
@@ -27,19 +69,30 @@ bptTotalSupply, amp) {
     // We need to scale down allBalances
     let allBalancesDownScaled = [];
     for (let i = 0; i < allBalances.length; i++) {
-        allBalancesDownScaled.push(allBalances[i].times(new bignumber_1.BigNumber(10).pow(-decimals[i])));
+        allBalancesDownScaled.push(
+            allBalances[i].times(
+                new bignumber_1.BigNumber(10).pow(-decimals[i])
+            )
+        );
     }
     for (let i = 0; i < allBalances.length; i++) {
         // We need to scale down amounts
-        amounts[i] = amounts[i].times(new bignumber_1.BigNumber(10).pow(-decimals[i]));
+        amounts[i] = amounts[i].times(
+            new bignumber_1.BigNumber(10).pow(-decimals[i])
+        );
         let poolPairData = {
             amp: amp,
             allBalances: allBalancesDownScaled,
             tokenIndexIn: i,
-            balanceOut: bptTotalSupply.times(new bignumber_1.BigNumber(10).pow(-18)),
+            balanceOut: bptTotalSupply.times(
+                new bignumber_1.BigNumber(10).pow(-18)
+            ),
             swapFee: zero,
         };
-        let BPTPrice = stableMath._spotPriceAfterSwapTokenInForExactBPTOut(zero, poolPairData);
+        let BPTPrice = stableMath._spotPriceAfterSwapTokenInForExactBPTOut(
+            zero,
+            poolPairData
+        );
         amountBPTOut = amountBPTOut.plus(amounts[i].div(BPTPrice));
     }
     // We need to scale up the amount of BPT out

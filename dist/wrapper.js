@@ -1,15 +1,15 @@
 'use strict';
 var __awaiter =
     (this && this.__awaiter) ||
-    function(thisArg, _arguments, P, generator) {
+    function (thisArg, _arguments, P, generator) {
         function adopt(value) {
             return value instanceof P
                 ? value
-                : new P(function(resolve) {
+                : new P(function (resolve) {
                       resolve(value);
                   });
         }
-        return new (P || (P = Promise))(function(resolve, reject) {
+        return new (P || (P = Promise))(function (resolve, reject) {
             function fulfilled(value) {
                 try {
                     step(generator.next(value));
@@ -35,6 +35,7 @@ var __awaiter =
         });
     };
 Object.defineProperty(exports, '__esModule', { value: true });
+exports.SOR = void 0;
 const bignumber_1 = require('./utils/bignumber');
 const bmath_1 = require('./bmath');
 const index_1 = require('./index');
@@ -75,7 +76,7 @@ class SOR {
     If cost is passed then it manually sets the value.
     */
     setCostOutputToken(tokenOut, tokenDecimals, cost = null) {
-        return __awaiter(this, void 0, void 0, function*() {
+        return __awaiter(this, void 0, void 0, function* () {
             tokenOut = tokenOut.toLowerCase();
             if (cost === null) {
                 // Handle ETH/WETH cost
@@ -84,9 +85,7 @@ class SOR {
                     tokenOut.toLowerCase() ===
                         index_1.WETHADDR[this.chainId].toLowerCase()
                 ) {
-                    this.tokenCost[
-                        tokenOut.toLowerCase()
-                    ] = this.gasPrice
+                    this.tokenCost[tokenOut.toLowerCase()] = this.gasPrice
                         .times(this.swapCost)
                         .div(index_1.bnum(Math.pow(10, 18)));
                     return this.tokenCost[tokenOut.toLowerCase()];
@@ -117,42 +116,42 @@ class SOR {
     If pools url was passed in to constructor - uses this to fetch pools source.
     */
     fetchPools(isOnChain = true, poolsData = { pools: [] }) {
-        return __awaiter(this, void 0, void 0, function*() {
-            console.log('@@wrapper.ts:fetchPools..0');
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log('@@@@wrapper.ts:fetchPools..0');
             try {
                 // If poolsData has been passed to function these pools should be used
                 const isExternalPoolData =
                     poolsData.pools.length > 0 ? true : false;
                 let subgraphPools;
-                console.log('@@wrapper.ts:fetchPools..1');
+                console.log('@@@@wrapper.ts:fetchPools..1');
                 if (isExternalPoolData) {
-                    console.log('@@wrapper.ts:fetchPools..2');
+                    console.log('@@@@wrapper.ts:fetchPools..2');
                     subgraphPools = JSON.parse(JSON.stringify(poolsData));
-                    console.log('@@wrapper.ts:fetchPools..3');
+                    console.log('@@@@wrapper.ts:fetchPools..3');
                     // Store as latest pools data
                     if (!this.isUsingPoolsUrl)
                         this.subgraphPools = subgraphPools;
-                    console.log('@@wrapper.ts:fetchPools..4');
+                    console.log('@@@@wrapper.ts:fetchPools..4');
                 } else {
-                    console.log('@@wrapper.ts:fetchPools..5');
+                    console.log('@@@@wrapper.ts:fetchPools..5');
                     // Retrieve from URL if set otherwise use data passed in constructor
                     if (this.isUsingPoolsUrl) {
                         console.log('@@wrapper.ts:fetchPools..6');
                         subgraphPools = yield index_1.fetchSubgraphPools(
                             this.poolsUrl
                         );
-                        console.log('@@subgraphPools= ', subgraphPools);
+                        console.log('@@@@subgraphPools= ', subgraphPools);
                     } else {
-                        console.log('@@wrapper.ts:fetchPools..7');
+                        console.log('@@@@wrapper.ts:fetchPools..7');
                         subgraphPools = this.subgraphPools;
                     }
-                    console.log('@@wrapper.ts:fetchPools..8');
+                    console.log('@@@@wrapper.ts:fetchPools..8');
                     console.log(
-                        '@@wrapper.ts:fetchPools..8.1 subgraphPools = ',
+                        '@@@@wrapper.ts:fetchPools..8.1 subgraphPools = ',
                         subgraphPools
                     );
                 }
-                console.log('@@wrapper.ts:fetchPools..9');
+                console.log('@@@@wrapper.ts:fetchPools..9');
                 let previousStringify = JSON.stringify(
                     this.onChainBalanceCache
                 ); // Used for compare
@@ -162,24 +161,24 @@ class SOR {
                     subgraphPools,
                     isOnChain
                 );
-                console.log('@@wrapper.ts:fetchPools..11');
+                console.log('@@@@wrapper.ts:fetchPools..11');
                 // If new pools are different from previous then any previous processed data is out of date so clear
                 if (
                     previousStringify !==
                     JSON.stringify(this.onChainBalanceCache)
                 ) {
-                    console.log('@@wrapper.ts:fetchPools..12');
+                    console.log('@@@@wrapper.ts:fetchPools..12');
                     this.processedDataCache = {};
                 }
                 this.finishedFetchingOnChain = true;
-                console.log('@@wrapper.ts:fetchPools..13');
+                console.log('@@@@wrapper.ts:fetchPools..13');
                 return true;
             } catch (err) {
                 // On error clear all caches and return false so user knows to try again.
                 this.finishedFetchingOnChain = false;
                 this.onChainBalanceCache = { pools: [] };
                 this.processedDataCache = {};
-                console.error(`Error: fetchPools(): ${err.message}`);
+                console.error(`@@@@Error: fetchPools(): ${err.message}`);
                 return false;
             }
         });
@@ -188,7 +187,7 @@ class SOR {
     Uses multicall contract to fetch all onchain balances for pools.
     */
     fetchOnChainBalances(subgraphPools, isOnChain = true) {
-        return __awaiter(this, void 0, void 0, function*() {
+        return __awaiter(this, void 0, void 0, function* () {
             console.log('@@wrapper.ts: fetchOnChainBalances 1');
             console.log(
                 '@@wrapper.ts: fetchOnChainBalances subgraphPools = ',
@@ -236,7 +235,7 @@ class SOR {
             timestamp: 0,
         }
     ) {
-        return __awaiter(this, void 0, void 0, function*() {
+        return __awaiter(this, void 0, void 0, function* () {
             let swapInfo = {
                 tokenAddresses: [],
                 swaps: [],
@@ -263,7 +262,7 @@ class SOR {
                 );
                 if (!(swapOptions.poolTypeFilter === index_1.PoolFilter.All))
                     pools.pools = pools.pools.filter(
-                        p => p.poolType === swapOptions.poolTypeFilter
+                        (p) => p.poolType === swapOptions.poolTypeFilter
                     );
                 if (index_1.isLidoStableSwap(this.chainId, tokenIn, tokenOut)) {
                     swapInfo = yield index_1.getLidoStaticSwaps(
@@ -308,7 +307,7 @@ class SOR {
         useProcessCache = true,
         currentBlockTimestamp = 0
     ) {
-        return __awaiter(this, void 0, void 0, function*() {
+        return __awaiter(this, void 0, void 0, function* () {
             let swapInfo = {
                 tokenAddresses: [],
                 swaps: [],
@@ -324,9 +323,10 @@ class SOR {
             if (onChainPools.pools.length === 0) return swapInfo;
             let pools, paths, marketSp;
             // If token pair has been processed before that info can be reused to speed up execution
-            let cache = this.processedDataCache[
-                `${tokenIn}${tokenOut}${swapType}${currentBlockTimestamp}`
-            ];
+            let cache =
+                this.processedDataCache[
+                    `${tokenIn}${tokenOut}${swapType}${currentBlockTimestamp}`
+                ];
             // useProcessCache can be false to force fresh processing of paths/prices
             if (!useProcessCache || !cache) {
                 // If not previously cached we must process all paths/prices.
@@ -376,19 +376,15 @@ class SOR {
             // swapExactIn - total = total amount swap will return of tokenOut
             // swapExactOut - total = total amount of tokenIn required for swap
             let swaps, total, totalConsideringFees;
-            [
-                swaps,
-                total,
-                marketSp,
-                totalConsideringFees,
-            ] = index_1.smartOrderRouter(
-                JSON.parse(JSON.stringify(pools)), // Need to keep original pools for cache
-                paths,
-                swapType,
-                swapAmt,
-                this.maxPools,
-                costOutputToken
-            );
+            [swaps, total, marketSp, totalConsideringFees] =
+                index_1.smartOrderRouter(
+                    JSON.parse(JSON.stringify(pools)), // Need to keep original pools for cache
+                    paths,
+                    swapType,
+                    swapAmt,
+                    this.maxPools,
+                    costOutputToken
+                );
             if (useProcessCache)
                 this.processedDataCache[
                     `${tokenIn}${tokenOut}${swapType}${currentBlockTimestamp}`
