@@ -155,10 +155,26 @@ class SOR {
                 let previousStringify = JSON.stringify(
                     this.onChainBalanceCache
                 ); // Used for compare
+                console.log(
+                    '@@@@wrapper.ts:fetchPools..9...previousStringify= ',
+                    previousStringify
+                );
                 console.log('@@wrapper.ts:fetchPools..10');
                 // Get latest on-chain balances (returns data in string/normalized format)
                 this.onChainBalanceCache = yield this.fetchOnChainBalances(
                     subgraphPools,
+                    isOnChain
+                );
+                console.log(
+                    '@@@@wrapper.ts:fetchPools..this.onChainBalanceCache = ',
+                    this.onChainBalanceCache
+                );
+                console.log(
+                    '@@@@wrapper.ts:fetchPools..subgraphPools = ',
+                    subgraphPools
+                );
+                console.log(
+                    '@@@@wrapper.ts:fetchPools..isOnChain = ',
                     isOnChain
                 );
                 console.log('@@@@wrapper.ts:fetchPools..11');
@@ -167,7 +183,10 @@ class SOR {
                     previousStringify !==
                     JSON.stringify(this.onChainBalanceCache)
                 ) {
-                    console.log('@@@@wrapper.ts:fetchPools..12');
+                    console.log(
+                        '@@@@wrapper.ts:fetchPools..12. previousStringify = ',
+                        previousStringify
+                    );
                     this.processedDataCache = {};
                 }
                 this.finishedFetchingOnChain = true;
@@ -248,6 +267,13 @@ class SOR {
                 returnAmountFromSwaps: bmath_1.ZERO,
                 marketSp: bmath_1.ZERO,
             };
+            console.log('@@@@@@@@wrapper.ts: getSwaps() swapType=', swapType);
+            console.log('@@@@@@@@wrapper.ts: getSwaps() swapAmt=', swapAmt);
+            console.log('@@@@@@@@wrapper.ts: getSwaps() tokenIn=', tokenOut);
+            console.log(
+                '@@@@@@@@wrapper.ts: getSwaps() this.chainId=',
+                this.chainId
+            );
             const wrappedInfo = yield index_1.getWrappedInfo(
                 this.provider,
                 swapType,
@@ -255,6 +281,14 @@ class SOR {
                 tokenOut,
                 this.chainId,
                 swapAmt
+            );
+            console.log(
+                '@@@@@@@@wrapper.ts: getSwaps() wrappedInfo=',
+                wrappedInfo
+            );
+            console.log(
+                '@@@@@@@@wrapper.ts: getSwaps() this.finishedFetchingOnChain=',
+                this.finishedFetchingOnChain
             );
             if (this.finishedFetchingOnChain) {
                 let pools = JSON.parse(
@@ -264,6 +298,7 @@ class SOR {
                     pools.pools = pools.pools.filter(
                         (p) => p.poolType === swapOptions.poolTypeFilter
                     );
+                console.log('@@@@@@@@wrapper.ts: getSwaps() pools=', pools);
                 if (index_1.isLidoStableSwap(this.chainId, tokenIn, tokenOut)) {
                     swapInfo = yield index_1.getLidoStaticSwaps(
                         pools,
@@ -273,6 +308,10 @@ class SOR {
                         swapType,
                         wrappedInfo.swapAmountForSwaps,
                         this.provider
+                    );
+                    console.log(
+                        '@@@@@@@@wrapper.ts: getSwaps() swapInfo0=',
+                        swapInfo
                     );
                 } else {
                     swapInfo = yield this.processSwaps(
@@ -284,13 +323,31 @@ class SOR {
                         true,
                         swapOptions.timestamp
                     );
+                    console.log(
+                        '@@@@@@@@wrapper.ts: getSwaps() swapInfo1=',
+                        swapInfo
+                    );
                 }
-                if (swapInfo.returnAmount.isZero()) return swapInfo;
+                if (swapInfo.returnAmount.isZero()) {
+                    console.log(
+                        '@@@@@@@@wrapper.ts: getSwaps() swapInfo.returnAmount.isZero()=',
+                        swapInfo.returnAmount.isZero()
+                    );
+                    console.log(
+                        '@@@@@@@@wrapper.ts: getSwaps() swapInfo=',
+                        swapInfo
+                    );
+                    return swapInfo;
+                }
                 swapInfo = index_1.setWrappedInfo(
                     swapInfo,
                     swapType,
                     wrappedInfo,
                     this.chainId
+                );
+                console.log(
+                    '@@@@@@@@wrapper.ts: getSwaps() swapInfo=',
+                    swapInfo
                 );
             }
             return swapInfo;
@@ -320,6 +377,23 @@ class SOR {
                 returnAmountFromSwaps: bmath_1.ZERO,
                 marketSp: bmath_1.ZERO,
             };
+            console.log('@@@@@@@@wrapper.ts: tokenIn = ', tokenIn);
+            console.log('@@@@@@@@wrapper.ts: tokenOut = ', tokenOut);
+            console.log('@@@@@@@@wrapper.ts: swapType = ', swapType);
+            console.log('@@@@@@@@wrapper.ts: swapAmt = ', swapAmt);
+            console.log('@@@@@@@@wrapper.ts: onChainPools = ', onChainPools);
+            console.log(
+                '@@@@@@@@wrapper.ts: useProcessCache = ',
+                useProcessCache
+            );
+            console.log(
+                '@@@@@@@@wrapper.ts: currentBlockTimestamp = ',
+                currentBlockTimestamp
+            );
+            console.log(
+                '@@@@@@@@wrapper.ts: onChainPools.pools.length = ',
+                onChainPools.pools.length
+            );
             if (onChainPools.pools.length === 0) return swapInfo;
             let pools, paths, marketSp;
             // If token pair has been processed before that info can be reused to speed up execution

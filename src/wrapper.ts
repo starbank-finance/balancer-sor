@@ -162,6 +162,10 @@ export class SOR {
 
             console.log('@@@@wrapper.ts:fetchPools..9');
             let previousStringify = JSON.stringify(this.onChainBalanceCache); // Used for compare
+            console.log(
+                '@@@@wrapper.ts:fetchPools..9...previousStringify= ',
+                previousStringify
+            );
 
             console.log('@@wrapper.ts:fetchPools..10');
             // Get latest on-chain balances (returns data in string/normalized format)
@@ -170,12 +174,24 @@ export class SOR {
                 isOnChain
             );
 
+            console.log(
+                '@@@@wrapper.ts:fetchPools..this.onChainBalanceCache = ',
+                this.onChainBalanceCache
+            );
+            console.log(
+                '@@@@wrapper.ts:fetchPools..subgraphPools = ',
+                subgraphPools
+            );
+            console.log('@@@@wrapper.ts:fetchPools..isOnChain = ', isOnChain);
             console.log('@@@@wrapper.ts:fetchPools..11');
             // If new pools are different from previous then any previous processed data is out of date so clear
             if (
                 previousStringify !== JSON.stringify(this.onChainBalanceCache)
             ) {
-                console.log('@@@@wrapper.ts:fetchPools..12');
+                console.log(
+                    '@@@@wrapper.ts:fetchPools..12. previousStringify = ',
+                    previousStringify
+                );
                 this.processedDataCache = {};
             }
 
@@ -263,7 +279,13 @@ export class SOR {
             returnAmountFromSwaps: ZERO,
             marketSp: ZERO,
         };
-
+        console.log('@@@@@@@@wrapper.ts: getSwaps() swapType=', swapType);
+        console.log('@@@@@@@@wrapper.ts: getSwaps() swapAmt=', swapAmt);
+        console.log('@@@@@@@@wrapper.ts: getSwaps() tokenIn=', tokenOut);
+        console.log(
+            '@@@@@@@@wrapper.ts: getSwaps() this.chainId=',
+            this.chainId
+        );
         const wrappedInfo = await getWrappedInfo(
             this.provider,
             swapType,
@@ -272,13 +294,18 @@ export class SOR {
             this.chainId,
             swapAmt
         );
-
+        console.log('@@@@@@@@wrapper.ts: getSwaps() wrappedInfo=', wrappedInfo);
+        console.log(
+            '@@@@@@@@wrapper.ts: getSwaps() this.finishedFetchingOnChain=',
+            this.finishedFetchingOnChain
+        );
         if (this.finishedFetchingOnChain) {
             let pools = JSON.parse(JSON.stringify(this.onChainBalanceCache));
             if (!(swapOptions.poolTypeFilter === PoolFilter.All))
                 pools.pools = pools.pools.filter(
                     (p) => p.poolType === swapOptions.poolTypeFilter
                 );
+            console.log('@@@@@@@@wrapper.ts: getSwaps() pools=', pools);
 
             if (isLidoStableSwap(this.chainId, tokenIn, tokenOut)) {
                 swapInfo = await getLidoStaticSwaps(
@@ -290,6 +317,10 @@ export class SOR {
                     wrappedInfo.swapAmountForSwaps,
                     this.provider
                 );
+                console.log(
+                    '@@@@@@@@wrapper.ts: getSwaps() swapInfo0=',
+                    swapInfo
+                );
             } else {
                 swapInfo = await this.processSwaps(
                     wrappedInfo.tokenIn.addressForSwaps,
@@ -300,9 +331,23 @@ export class SOR {
                     true,
                     swapOptions.timestamp
                 );
+                console.log(
+                    '@@@@@@@@wrapper.ts: getSwaps() swapInfo1=',
+                    swapInfo
+                );
             }
 
-            if (swapInfo.returnAmount.isZero()) return swapInfo;
+            if (swapInfo.returnAmount.isZero()) {
+                console.log(
+                    '@@@@@@@@wrapper.ts: getSwaps() swapInfo.returnAmount.isZero()=',
+                    swapInfo.returnAmount.isZero()
+                );
+                console.log(
+                    '@@@@@@@@wrapper.ts: getSwaps() swapInfo=',
+                    swapInfo
+                );
+                return swapInfo;
+            }
 
             swapInfo = setWrappedInfo(
                 swapInfo,
@@ -310,6 +355,8 @@ export class SOR {
                 wrappedInfo,
                 this.chainId
             );
+
+            console.log('@@@@@@@@wrapper.ts: getSwaps() swapInfo=', swapInfo);
         }
 
         return swapInfo;
@@ -338,6 +385,20 @@ export class SOR {
             returnAmountFromSwaps: ZERO,
             marketSp: ZERO,
         };
+        console.log('@@@@@@@@wrapper.ts: tokenIn = ', tokenIn);
+        console.log('@@@@@@@@wrapper.ts: tokenOut = ', tokenOut);
+        console.log('@@@@@@@@wrapper.ts: swapType = ', swapType);
+        console.log('@@@@@@@@wrapper.ts: swapAmt = ', swapAmt);
+        console.log('@@@@@@@@wrapper.ts: onChainPools = ', onChainPools);
+        console.log('@@@@@@@@wrapper.ts: useProcessCache = ', useProcessCache);
+        console.log(
+            '@@@@@@@@wrapper.ts: currentBlockTimestamp = ',
+            currentBlockTimestamp
+        );
+        console.log(
+            '@@@@@@@@wrapper.ts: onChainPools.pools.length = ',
+            onChainPools.pools.length
+        );
 
         if (onChainPools.pools.length === 0) return swapInfo;
         let pools: PoolDictionary, paths: NewPath[], marketSp: BigNumber;
