@@ -6,7 +6,6 @@
     "types": "dist/index.d.ts",
     "scripts": {
         "build": "tsc",
-        "testtest": "ts-node src/subgraphtest.ts ",
         "prepublish": "tsc",
         "test": "nyc mocha -r ts-node/register test/*.spec.ts",
         "coverage": "nyc report --reporter=text-lcov | coveralls"

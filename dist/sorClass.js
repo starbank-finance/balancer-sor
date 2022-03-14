@@ -105,6 +105,7 @@ const smartOrderRouter = (
     maxPools,
     costReturnToken
 ) => {
+    console.log('@@@@@@sorClass: smartOrderRouter() ');
     let bestTotalReturn = new bignumber_1.BigNumber(0);
     let bestTotalReturnConsideringFees = new bignumber_1.BigNumber(0);
     let totalReturn, totalReturnConsideringFees;

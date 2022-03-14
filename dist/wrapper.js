@@ -299,6 +299,7 @@ class SOR {
                         (p) => p.poolType === swapOptions.poolTypeFilter
                     );
                 console.log('@@@@@@@@wrapper.ts: getSwaps() pools=', pools);
+                console.log('@@@@@@@@wrapper.ts: getSwaps() isLidoStableSwap');
                 if (index_1.isLidoStableSwap(this.chainId, tokenIn, tokenOut)) {
                     swapInfo = yield index_1.getLidoStaticSwaps(
                         pools,
@@ -314,6 +315,7 @@ class SOR {
                         swapInfo
                     );
                 } else {
+                    console.log('@@@@@@@@wrapper.ts: getSwaps() processSwaps');
                     swapInfo = yield this.processSwaps(
                         wrappedInfo.tokenIn.addressForSwaps,
                         wrappedInfo.tokenOut.addressForSwaps,
@@ -377,21 +379,30 @@ class SOR {
                 returnAmountFromSwaps: bmath_1.ZERO,
                 marketSp: bmath_1.ZERO,
             };
-            console.log('@@@@@@@@wrapper.ts: tokenIn = ', tokenIn);
-            console.log('@@@@@@@@wrapper.ts: tokenOut = ', tokenOut);
-            console.log('@@@@@@@@wrapper.ts: swapType = ', swapType);
-            console.log('@@@@@@@@wrapper.ts: swapAmt = ', swapAmt);
-            console.log('@@@@@@@@wrapper.ts: onChainPools = ', onChainPools);
+            console.log('@@@@@@@@wrapper.ts:processSwaps tokenIn = ', tokenIn);
             console.log(
-                '@@@@@@@@wrapper.ts: useProcessCache = ',
+                '@@@@@@@@wrapper.ts:processSwaps tokenOut = ',
+                tokenOut
+            );
+            console.log(
+                '@@@@@@@@wrapper.ts:processSwaps swapType = ',
+                swapType
+            );
+            console.log('@@@@@@@@wrapper.ts:processSwaps swapAmt = ', swapAmt);
+            console.log(
+                '@@@@@@@@wrapper.ts:processSwaps onChainPools = ',
+                onChainPools
+            );
+            console.log(
+                '@@@@@@@@wrapper.ts:processSwaps useProcessCache = ',
                 useProcessCache
             );
             console.log(
-                '@@@@@@@@wrapper.ts: currentBlockTimestamp = ',
+                '@@@@@@@@wrapper.ts:processSwaps currentBlockTimestamp = ',
                 currentBlockTimestamp
             );
             console.log(
-                '@@@@@@@@wrapper.ts: onChainPools.pools.length = ',
+                '@@@@@@@@wrapper.ts:processSwaps onChainPools.pools.length = ',
                 onChainPools.pools.length
             );
             if (onChainPools.pools.length === 0) return swapInfo;
@@ -404,6 +415,11 @@ class SOR {
             // useProcessCache can be false to force fresh processing of paths/prices
             if (!useProcessCache || !cache) {
                 // If not previously cached we must process all paths/prices.
+                console.log('@@@@@@@@wrapper.ts:processSwaps no cache');
+                console.log(
+                    '@@@@@@@@wrapper.ts:processSwaps onChainPools=',
+                    onChainPools
+                );
                 // Always use onChain info
                 // Some functions alter pools list directly but we want to keep original so make a copy to work from
                 let poolsList = JSON.parse(JSON.stringify(onChainPools));
@@ -417,13 +433,24 @@ class SOR {
                     this.disabledOptions,
                     currentBlockTimestamp
                 );
+                console.log('@@@@@@@@wrapper.ts:processSwaps pools:', pools);
+                console.log(
+                    '@@@@@@@@wrapper.ts:processSwaps hopTokens:',
+                    hopTokens
+                );
                 [pools, pathData] = index_1.filterHopPools(
                     tokenIn,
                     tokenOut,
                     hopTokens,
                     pools
                 );
+                console.log('@@@@@@@@wrapper.ts:processSwaps pools:', pools);
+                console.log(
+                    '@@@@@@@@wrapper.ts:processSwaps pathData:',
+                    pathData
+                );
                 [paths] = index_1.calculatePathLimits(pathData, swapType);
+                console.log('@@@@@@@@wrapper.ts:processSwaps paths:', paths);
                 // Update cache if used
                 if (useProcessCache)
                     this.processedDataCache[
@@ -433,6 +460,10 @@ class SOR {
                         paths: paths,
                         marketSp: marketSp,
                     };
+                console.log(
+                    '@@@@@@@@wrapper.ts:processSwaps useProcessCache:',
+                    useProcessCache
+                );
             } else {
                 // Using pre-processed data from cache
                 pools = cache.pools;
@@ -440,6 +471,10 @@ class SOR {
                 marketSp = cache.marketSp;
             }
             let costOutputToken = this.tokenCost[tokenOut];
+            console.log(
+                '@@@@@@@@wrapper.ts:processSwaps costOutputToken:',
+                costOutputToken
+            );
             if (swapType === index_1.SwapTypes.SwapExactOut)
                 costOutputToken = this.tokenCost[tokenIn];
             // Use previously stored value if exists else default to 0
@@ -459,6 +494,12 @@ class SOR {
                     this.maxPools,
                     costOutputToken
                 );
+            console.log(
+                '@@@@@@@@wrapper.ts:processSwaps totalConsideringFees:',
+                totalConsideringFees
+            );
+            console.log('@@@@@@@@wrapper.ts:processSwaps marketSp:', marketSp);
+            console.log('@@@@@@@@wrapper.ts:processSwaps swaps:', swaps);
             if (useProcessCache)
                 this.processedDataCache[
                     `${tokenIn}${tokenOut}${swapType}${currentBlockTimestamp}`
@@ -473,6 +514,7 @@ class SOR {
                 totalConsideringFees,
                 marketSp
             );
+            console.log('@@@@@@@@wrapper.ts:processSwaps swapInfo:', swapInfo);
             return swapInfo;
         });
     }
