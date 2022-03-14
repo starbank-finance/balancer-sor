@@ -1,3 +1,21 @@
+import { BigNumber } from './utils/bignumber';
+// import { Zero } from '@ethersproject/constants';
+import { SwapInfo } from './types';
+const Zero = new BigNumber(0);
+export const EMPTY_SWAPINFO: SwapInfo = {
+    tokenAddresses: [],
+    swaps: [],
+    swapAmount: Zero,
+    swapAmountForSwaps: Zero,
+    tokenIn: '',
+    tokenOut: '',
+    returnAmount: Zero,
+    returnAmountConsideringFees: Zero,
+    returnAmountFromSwaps: Zero,
+    // marketSp: Zero
+    marketSp: Zero,
+};
+
 export const WETHADDR: { [chainId: number]: string } = {
     1: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
     5: '0x9A1000D492d40bfccbc03f413A48F5B6516Ec0Fd',

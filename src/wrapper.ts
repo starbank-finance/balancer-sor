@@ -1,6 +1,9 @@
 import { BaseProvider } from '@ethersproject/providers';
 import { BigNumber } from './utils/bignumber';
 import { ZERO } from './bmath';
+import cloneDeep from 'lodash.clonedeep';
+import { EMPTY_SWAPINFO } from './constants';
+
 import {
     SwapInfo,
     DisabledOptions,
@@ -28,7 +31,7 @@ import {
     getCostOutputToken,
     bnum,
 } from './index';
-
+import { Swap, SubgraphPoolBase } from './types';
 export class SOR {
     provider: BaseProvider;
     gasPrice: BigNumber;
@@ -323,6 +326,14 @@ export class SOR {
                     swapInfo
                 );
             } else {
+                console.log(
+                    '@@@@@@@@wrapper.ts: getSwaps() processSwaps. pools=',
+                    pools
+                );
+                console.log(
+                    '@@@@@@@@wrapper.ts: getSwaps() processSwaps. wrappedInfo=',
+                    wrappedInfo
+                );
                 console.log('@@@@@@@@wrapper.ts: getSwaps() processSwaps');
                 swapInfo = await this.processSwaps(
                     wrappedInfo.tokenIn.addressForSwaps,
@@ -330,6 +341,7 @@ export class SOR {
                     swapType,
                     wrappedInfo.swapAmountForSwaps,
                     pools,
+                    // swapOptions
                     true,
                     swapOptions.timestamp
                 );
@@ -467,10 +479,18 @@ export class SOR {
                     marketSp: marketSp,
                 };
             console.log(
+                '@@@@@@@@wrapper.ts:processSwaps this.processedDataCache:',
+                this.processedDataCache
+            );
+            console.log(
                 '@@@@@@@@wrapper.ts:processSwaps useProcessCache:',
                 useProcessCache
             );
         } else {
+            console.log(
+                '@@@@@@@@wrapper.ts:processSwaps use cache..',
+                useProcessCache
+            );
             // Using pre-processed data from cache
             pools = cache.pools;
             paths = cache.paths;
@@ -491,18 +511,28 @@ export class SOR {
             costOutputToken = new BigNumber(0);
         }
 
+        console.log(
+            '@@@@@@@@wrapper.ts:processSwaps totalConsideringFees. pools=',
+            pools
+        );
+        console.log(
+            '@@@@@@@@wrapper.ts:processSwaps totalConsideringFees. paths=',
+            paths
+        );
+
         // Returns list of swaps
         // swapExactIn - total = total amount swap will return of tokenOut
         // swapExactOut - total = total amount of tokenIn required for swap
         let swaps: any, total: BigNumber, totalConsideringFees: BigNumber;
-        [swaps, total, marketSp, totalConsideringFees] = smartOrderRouter(
-            JSON.parse(JSON.stringify(pools)), // Need to keep original pools for cache
-            paths,
-            swapType,
-            swapAmt,
-            this.maxPools,
-            costOutputToken
-        );
+
+        // [swaps, total, marketSp, totalConsideringFees] = smartOrderRouter(
+        //     JSON.parse(JSON.stringify(pools)), // Need to keep original pools for cache
+        //     paths,
+        //     swapType,
+        //     swapAmt,
+        //     this.maxPools,
+        //     costOutputToken
+        // );
         console.log(
             '@@@@@@@@wrapper.ts:processSwaps totalConsideringFees:',
             totalConsideringFees
@@ -529,4 +559,73 @@ export class SOR {
 
         return swapInfo;
     }
+
+    // // Will process swap/pools data and return best swaps
+    // private async processSwaps(
+    //     tokenIn: string,
+    //     tokenOut: string,
+    //     swapType: SwapTypes,
+    //     swapAmount: BigNumber,
+    //     pools: SubgraphPoolBase[],
+    //     swapOptions: SwapOptions
+    // ): Promise<SwapInfo> {
+    //     if (pools.length === 0) return cloneDeep(EMPTY_SWAPINFO);
+
+    //     const paths = this.routeProposer.getCandidatePaths(
+    //         tokenIn,
+    //         tokenOut,
+    //         swapType,
+    //         pools,
+    //         swapOptions
+    //     );
+
+    //     if (paths.length == 0) return cloneDeep(EMPTY_SWAPINFO);
+
+    //     // Path is guaranteed to contain both tokenIn and tokenOut
+    //     let tokenInDecimals;
+    //     let tokenOutDecimals;
+    //     paths[0].swaps.forEach((swap) => {
+    //         // Inject token decimals to avoid having to query onchain
+    //         if (isSameAddress(swap.tokenIn, tokenIn)) {
+    //             tokenInDecimals = swap.tokenInDecimals;
+    //         }
+    //         if (isSameAddress(swap.tokenOut, tokenOut)) {
+    //             tokenOutDecimals = swap.tokenOutDecimals;
+    //         }
+    //     });
+
+    //     const costOutputToken = await this.getCostOfSwapInToken(
+    //         swapType === SwapTypes.SwapExactIn ? tokenOut : tokenIn,
+    //         swapType === SwapTypes.SwapExactIn
+    //             ? tokenOutDecimals
+    //             : tokenInDecimals,
+    //         swapOptions.gasPrice,
+    //         swapOptions.swapGas
+    //     );
+
+    //     // Returns list of swaps
+    //     const [swaps, total, marketSp, totalConsideringFees] =
+    //         this.getBestPaths(
+    //             paths,
+    //             swapAmount,
+    //             swapType,
+    //             tokenInDecimals,
+    //             tokenOutDecimals,
+    //             costOutputToken,
+    //             swapOptions.maxPools
+    //         );
+
+    //     const swapInfo = formatSwaps(
+    //         swaps,
+    //         swapType,
+    //         swapAmount,
+    //         tokenIn,
+    //         tokenOut,
+    //         total,
+    //         totalConsideringFees,
+    //         marketSp
+    //     );
+
+    //     return swapInfo;
+    // }
 }

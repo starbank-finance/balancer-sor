@@ -47,9 +47,11 @@ const solidity_1 = require('@ethersproject/solidity');
 const bignumber_1 = require('./utils/bignumber');
 const bmath_1 = require('./bmath');
 // const FACTORY_ADDRESS = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f';
+// ArthSwap's Factory Address
 const FACTORY_ADDRESS = '0xA9473608514457b4bF083f9045fA63ae5810A03E';
+// ArthSwap's INIT_CODE_HASH
 const INIT_CODE_HASH =
-    '0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f';
+    '0x613b36de6401276e4d938ad0db4063490e66bb3ab2e4aec17cab78a15ea7a0b6';
 function getAddress(tokenA, tokenB) {
     const tokens =
         tokenA.toLowerCase() < tokenB.toLowerCase()

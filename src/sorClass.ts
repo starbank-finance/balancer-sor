@@ -114,7 +114,7 @@ export const smartOrderRouter = (
     maxPools: number,
     costReturnToken: BigNumber
 ): [Swap[][], BigNumber, BigNumber, BigNumber] => {
-    console.log('@@@@@@sorClass: smartOrderRouter() ');
+    console.log('@@@@@@sorClass: smartOrderRouter() 123 ');
 
     let bestTotalReturn: BigNumber = new BigNumber(0);
     let bestTotalReturnConsideringFees: BigNumber = new BigNumber(0);
@@ -127,6 +127,7 @@ export const smartOrderRouter = (
     }
     // Before we start the main loop, we first check if there is enough liquidity for this totalSwapAmount at all
     let highestLimitAmounts = getHighestLimitAmountsForPaths(paths, maxPools);
+    console.log('@@@@@@sorClass: smartOrderRouter() 234 ');
 
     //  We use the highest limits to define the initial number of pools considered and the initial guess for swapAmounts. If the
     //  highest_limit is lower than totalSwapAmount, then we should obviously not waste time trying to calculate the SOR suggestion for 1 pool,
@@ -150,6 +151,7 @@ export const smartOrderRouter = (
     if (initialNumPaths == -1) {
         return [[], ZERO, ZERO, ZERO]; // Not enough liquidity, return empty
     }
+    console.log('@@@@@@sorClass: smartOrderRouter() 345 ');
 
     // First get the optimal totalReturn to trade 'totalSwapAmount' with
     // one path only (b=1). Then increase the number of pools as long as
@@ -179,6 +181,7 @@ export const smartOrderRouter = (
             });
             swapAmounts.push(newSwapAmount);
         }
+        console.log('@@@@@@sorClass: smartOrderRouter() 456 ');
 
         //  iterate until we converge to the best pools for a given totalSwapAmount
         //  first initialize variables
@@ -219,6 +222,8 @@ export const smartOrderRouter = (
 
             sortedPathIdsJSON = JSON.stringify([...pathIds].sort());
         }
+        console.log('@@@@@@sorClass: smartOrderRouter() 567 ');
+
         // In case b = 1 the while above was skipped and we need to define selectedPaths
         if (b == 1) selectedPaths = newSelectedPaths;
 
@@ -261,10 +266,12 @@ export const smartOrderRouter = (
         } else {
             break;
         }
+        console.log('@@@@@@sorClass: smartOrderRouter() 678 ');
 
         // Stop if max number of pools has been reached
         if (totalNumberOfPools >= maxPools) break;
     }
+    console.log('@@@@@@sorClass: smartOrderRouter() 798 ');
 
     //// Prepare swap data from paths
     let swaps: Swap[][] = [];
@@ -273,10 +280,12 @@ export const smartOrderRouter = (
     let lenghtFirstPath;
     let highestSwapAmt = ZERO;
     let largestSwapPath: NewPath;
+    console.log('@@@@@@sorClass: smartOrderRouter() 712 ');
     bestTotalReturn = ZERO; // Reset totalReturn as this time it will be
     // calculated with the EVM maths so the return is exactly what the user will get
     // after executing the transaction (given there are no front-runners)
     bestPaths.forEach((path, i) => {
+        console.log('@@@@@@sorClass: smartOrderRouter() 713.  path=', path);
         let swapAmount = bestSwapAmounts[i];
         // 0 swap amounts can occur due to rounding errors but we don't want to pass those on so filter out
         if (swapAmount.isZero()) return;
@@ -299,13 +308,14 @@ export const smartOrderRouter = (
             */
         let poolPairData = path.poolPairData;
 
-        if (i == 0)
+        if (i == 0) {
             // Store lenght of first path to add dust to correct rounding error at the end
             lenghtFirstPath = path.swaps.length;
-
+        }
         let returnAmount;
 
         if (poolPairData.length == 1) {
+            console.log('@@@@@@sorClass: smartOrderRouter() 714.  ');
             // Direct trade: add swap from only pool
             let swap: Swap = {
                 pool: path.swaps[0].pool,
@@ -320,13 +330,20 @@ export const smartOrderRouter = (
                 tokenInDecimals: path.poolPairData[0].decimalsIn.toString(),
                 tokenOutDecimals: path.poolPairData[0].decimalsOut.toString(),
             };
+            console.log('@@@@@@sorClass: smartOrderRouter() 715.  ');
+            console.log('@@@@@@sorClass: smartOrderRouter() 715. swap= ', swap);
             swaps.push([swap]);
+            console.log('@@@@@@sorClass: smartOrderRouter() 716.  ');
             // Call EVMgetOutputAmountSwap to guarantee pool state is updated
             returnAmount = EVMgetOutputAmountSwap(
                 path.pools[0],
                 poolPairData[0],
                 swapType,
                 swapAmount
+            );
+            console.log(
+                '@@@@@@sorClass: smartOrderRouter() 716.  returnAmount=',
+                returnAmount
             );
         } else {
             // Multi-hop:
@@ -337,8 +354,10 @@ export const smartOrderRouter = (
             let swap2 = path.swaps[1];
             let poolSwap2 = pools[swap2.pool];
 
+            console.log('@@@@@@sorClass: smartOrderRouter() 717.  ');
             let amountSwap1, amountSwap2;
             if (swapType === SwapTypes.SwapExactIn) {
+                console.log('@@@@@@sorClass: smartOrderRouter() 718.  ');
                 amountSwap1 = swapAmount;
                 amountSwap2 = EVMgetOutputAmountSwap(
                     path.pools[0],
@@ -346,6 +365,11 @@ export const smartOrderRouter = (
                     swapType,
                     swapAmount
                 );
+                console.log(
+                    '@@@@@@sorClass: smartOrderRouter() 718. amountSwap2= ',
+                    amountSwap2
+                );
+
                 // Call EVMgetOutputAmountSwap to update the pool state
                 // for the second hop as well (the first was updated above)
                 returnAmount = EVMgetOutputAmountSwap(
@@ -354,13 +378,27 @@ export const smartOrderRouter = (
                     swapType,
                     amountSwap2
                 );
+                console.log(
+                    '@@@@@@sorClass: smartOrderRouter() 718. returnAmount= ',
+                    returnAmount
+                );
             } else {
+                console.log('@@@@@@sorClass: smartOrderRouter() 719.  ');
                 amountSwap1 = EVMgetOutputAmountSwap(
                     path.pools[1],
                     poolPairData[1],
                     swapType,
                     swapAmount
                 );
+                console.log(
+                    '@@@@@@sorClass: smartOrderRouter() 719.1.  amountSwap1=',
+                    amountSwap1
+                );
+                console.log(
+                    '@@@@@@sorClass: smartOrderRouter() 719.1.  swapAmount=',
+                    swapAmount
+                );
+
                 amountSwap2 = swapAmount;
                 // Call EVMgetOutputAmountSwap to update the pool state
                 // for the second hop as well (the first was updated above)
@@ -370,7 +408,12 @@ export const smartOrderRouter = (
                     swapType,
                     amountSwap1
                 );
+                console.log(
+                    '@@@@@@sorClass: smartOrderRouter() 719.1.  returnAmount=',
+                    returnAmount
+                );
             }
+            console.log('@@@@@@sorClass: smartOrderRouter() 720.  ');
 
             // Add swap from first pool
             let swap1hop: Swap = {
@@ -406,28 +449,35 @@ export const smartOrderRouter = (
         // Update bestTotalReturn with EVM return
         bestTotalReturn = bestTotalReturn.plus(returnAmount);
     });
-
+    console.log('@@@@@@sorClass: smartOrderRouter() 890 ');
     // Since the individual swapAmounts for each path are integers, the sum of all swapAmounts
     // might not be exactly equal to the totalSwapAmount the user requested. We need to correct that rounding error
     // and we do that by adding the rounding error to the first path.
     if (swaps.length > 0) {
+        console.log('@@@@@@sorClass: smartOrderRouter() 891 ');
+
         dust = totalSwapAmount.minus(totalSwapAmountWithRoundingErrors);
         if (swapType === SwapTypes.SwapExactIn) {
+            console.log('@@@@@@sorClass: smartOrderRouter() 892 ');
             swaps[0][0].swapAmount = new BigNumber(swaps[0][0].swapAmount)
                 .plus(dust)
                 .toString(); // Add dust to first swapExactIn
         } else {
-            if (lenghtFirstPath == 1)
+            console.log('@@@@@@sorClass: smartOrderRouter() 893 ');
+            if (lenghtFirstPath == 1) {
+                console.log('@@@@@@sorClass: smartOrderRouter() 894 ');
                 // First path is a direct path (only one pool)
                 swaps[0][0].swapAmount = new BigNumber(swaps[0][0].swapAmount)
                     .plus(dust)
                     .toString();
-            // Add dust to first swapExactOut
-            // First path is a multihop path (two pools)
-            else
+                // Add dust to first swapExactOut
+                // First path is a multihop path (two pools)
+            } else {
+                console.log('@@@@@@sorClass: smartOrderRouter() 895 ');
                 swaps[0][1].swapAmount = new BigNumber(swaps[0][1].swapAmount)
                     .plus(dust)
                     .toString(); // Add dust to second swapExactOut
+            }
         }
     }
 
@@ -443,6 +493,7 @@ export const smartOrderRouter = (
         marketSp = ZERO;
         bestTotalReturnConsideringFees = ZERO;
     }
+    console.log('@@@@@@sorClass: smartOrderRouter() 901 ');
 
     return [swaps, bestTotalReturn, marketSp, bestTotalReturnConsideringFees];
 };

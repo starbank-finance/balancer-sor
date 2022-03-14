@@ -1,3 +1,5 @@
+import { SwapInfo } from './types';
+export declare const EMPTY_SWAPINFO: SwapInfo;
 export declare const WETHADDR: {
     [chainId: number]: string;
 };

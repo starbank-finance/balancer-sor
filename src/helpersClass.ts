@@ -546,8 +546,8 @@ export function formatSwaps(
         return swapInfo;
     }
 
-    swaps.forEach(sequence => {
-        sequence.forEach(swap => {
+    swaps.forEach((sequence) => {
+        sequence.forEach((swap) => {
             if (swap.tokenIn === tokenIn)
                 tokenInDecimals = swap.tokenInDecimals;
 
@@ -570,7 +570,7 @@ export function formatSwaps(
          * of the previous swap to be used as the amount in of the current one.In such a scenario, `tokenIn` must equal the
          * previous swap's `tokenOut`.
          * */
-        swaps.forEach(sequence => {
+        swaps.forEach((sequence) => {
             sequence.forEach((swap, i) => {
                 let amountScaled = '0'; // amount will be 0 for second swap in multihop swap
                 if (i == 0) {
@@ -602,16 +602,12 @@ export function formatSwaps(
         let swapAmountScaled = scale(swapAmount, tokenInDecimals);
         let dust = swapAmountScaled.minus(totalSwapAmount).dp(0, 0);
         if (dust.gt(0))
-            swapsV2[0].amount = bnum(swapsV2[0].amount)
-                .plus(dust)
-                .toString();
+            swapsV2[0].amount = bnum(swapsV2[0].amount).plus(dust).toString();
 
         swapInfo.swapAmount = swapAmountScaled;
         // Using this split to remove any decimals
         swapInfo.returnAmount = bnum(
-            scale(returnAmount, tokenOutDecimals)
-                .toString()
-                .split('.')[0]
+            scale(returnAmount, tokenOutDecimals).toString().split('.')[0]
         );
         swapInfo.returnAmountConsideringFees = bnum(
             scale(returnAmountConsideringFees, tokenOutDecimals)
@@ -667,16 +663,12 @@ export function formatSwaps(
         let swapAmountScaled = scale(swapAmount, tokenOutDecimals);
         let dust = swapAmountScaled.minus(totalSwapAmount).dp(0, 0);
         if (dust.gt(0))
-            swapsV2[0].amount = bnum(swapsV2[0].amount)
-                .plus(dust)
-                .toString();
+            swapsV2[0].amount = bnum(swapsV2[0].amount).plus(dust).toString();
 
         swapInfo.swapAmount = swapAmountScaled;
         // Using this split to remove any decimals
         swapInfo.returnAmount = bnum(
-            scale(returnAmount, tokenInDecimals)
-                .toString()
-                .split('.')[0]
+            scale(returnAmount, tokenInDecimals).toString().split('.')[0]
         );
         swapInfo.returnAmountConsideringFees = bnum(
             scale(returnAmountConsideringFees, tokenInDecimals)
@@ -831,9 +823,10 @@ export function setWrappedInfo(
         swapInfo.returnAmount = swapInfo.returnAmount
             .div(wrappedInfo.tokenOut.rate)
             .dp(0);
-        swapInfo.returnAmountConsideringFees = swapInfo.returnAmountConsideringFees
-            .div(wrappedInfo.tokenOut.rate)
-            .dp(0);
+        swapInfo.returnAmountConsideringFees =
+            swapInfo.returnAmountConsideringFees
+                .div(wrappedInfo.tokenOut.rate)
+                .dp(0);
     }
 
     // SwapExactOut, stETH in, returnAmount us stETH amount in, returnAmountForSwaps is wstETH amount in
@@ -844,9 +837,10 @@ export function setWrappedInfo(
         swapInfo.returnAmount = swapInfo.returnAmount
             .div(wrappedInfo.tokenIn.rate)
             .dp(0);
-        swapInfo.returnAmountConsideringFees = swapInfo.returnAmountConsideringFees
-            .div(wrappedInfo.tokenIn.rate)
-            .dp(0);
+        swapInfo.returnAmountConsideringFees =
+            swapInfo.returnAmountConsideringFees
+                .div(wrappedInfo.tokenIn.rate)
+                .dp(0);
     }
     return swapInfo;
 }

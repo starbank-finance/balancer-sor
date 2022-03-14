@@ -315,6 +315,14 @@ class SOR {
                         swapInfo
                     );
                 } else {
+                    console.log(
+                        '@@@@@@@@wrapper.ts: getSwaps() processSwaps. pools=',
+                        pools
+                    );
+                    console.log(
+                        '@@@@@@@@wrapper.ts: getSwaps() processSwaps. wrappedInfo=',
+                        wrappedInfo
+                    );
                     console.log('@@@@@@@@wrapper.ts: getSwaps() processSwaps');
                     swapInfo = yield this.processSwaps(
                         wrappedInfo.tokenIn.addressForSwaps,
@@ -322,6 +330,7 @@ class SOR {
                         swapType,
                         wrappedInfo.swapAmountForSwaps,
                         pools,
+                        // swapOptions
                         true,
                         swapOptions.timestamp
                     );
@@ -461,10 +470,18 @@ class SOR {
                         marketSp: marketSp,
                     };
                 console.log(
+                    '@@@@@@@@wrapper.ts:processSwaps this.processedDataCache:',
+                    this.processedDataCache
+                );
+                console.log(
                     '@@@@@@@@wrapper.ts:processSwaps useProcessCache:',
                     useProcessCache
                 );
             } else {
+                console.log(
+                    '@@@@@@@@wrapper.ts:processSwaps use cache..',
+                    useProcessCache
+                );
                 // Using pre-processed data from cache
                 pools = cache.pools;
                 paths = cache.paths;
@@ -481,19 +498,26 @@ class SOR {
             if (costOutputToken === undefined) {
                 costOutputToken = new bignumber_1.BigNumber(0);
             }
+            console.log(
+                '@@@@@@@@wrapper.ts:processSwaps totalConsideringFees. pools=',
+                pools
+            );
+            console.log(
+                '@@@@@@@@wrapper.ts:processSwaps totalConsideringFees. paths=',
+                paths
+            );
             // Returns list of swaps
             // swapExactIn - total = total amount swap will return of tokenOut
             // swapExactOut - total = total amount of tokenIn required for swap
             let swaps, total, totalConsideringFees;
-            [swaps, total, marketSp, totalConsideringFees] =
-                index_1.smartOrderRouter(
-                    JSON.parse(JSON.stringify(pools)), // Need to keep original pools for cache
-                    paths,
-                    swapType,
-                    swapAmt,
-                    this.maxPools,
-                    costOutputToken
-                );
+            // [swaps, total, marketSp, totalConsideringFees] = smartOrderRouter(
+            //     JSON.parse(JSON.stringify(pools)), // Need to keep original pools for cache
+            //     paths,
+            //     swapType,
+            //     swapAmt,
+            //     this.maxPools,
+            //     costOutputToken
+            // );
             console.log(
                 '@@@@@@@@wrapper.ts:processSwaps totalConsideringFees:',
                 totalConsideringFees

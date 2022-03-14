@@ -1,6 +1,25 @@
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
-exports.VAULTADDR = exports.MULTIADDR = exports.WETHADDR = void 0;
+exports.VAULTADDR =
+    exports.MULTIADDR =
+    exports.WETHADDR =
+    exports.EMPTY_SWAPINFO =
+        void 0;
+const bignumber_1 = require('./utils/bignumber');
+const Zero = new bignumber_1.BigNumber(0);
+exports.EMPTY_SWAPINFO = {
+    tokenAddresses: [],
+    swaps: [],
+    swapAmount: Zero,
+    swapAmountForSwaps: Zero,
+    tokenIn: '',
+    tokenOut: '',
+    returnAmount: Zero,
+    returnAmountConsideringFees: Zero,
+    returnAmountFromSwaps: Zero,
+    // marketSp: Zero
+    marketSp: Zero,
+};
 exports.WETHADDR = {
     1: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
     5: '0x9A1000D492d40bfccbc03f413A48F5B6516Ec0Fd',
