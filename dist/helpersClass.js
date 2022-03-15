@@ -55,6 +55,14 @@ const config_1 = require('./config');
 const index_1 = require('./index');
 const constants_1 = require('./constants');
 function getHighestLimitAmountsForPaths(paths, maxPools) {
+    console.log(
+        '@@@@@@helpersColass: getHighestLimitAmountsForPaths() paths=',
+        paths
+    );
+    console.log(
+        '@@@@@@helpersColass: getHighestLimitAmountsForPaths() maxPools=',
+        maxPools
+    );
     if (paths.length === 0) return [];
     let limitAmounts = [];
     for (let i = 0; i < maxPools; i++) {
@@ -63,6 +71,10 @@ function getHighestLimitAmountsForPaths(paths, maxPools) {
             limitAmounts.push(limitAmount);
         }
     }
+    console.log(
+        '@@@@@@helpersColass: getHighestLimitAmountsForPaths() limitAmounts=',
+        limitAmounts
+    );
     return limitAmounts;
 }
 exports.getHighestLimitAmountsForPaths = getHighestLimitAmountsForPaths;

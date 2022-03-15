@@ -132,7 +132,10 @@ const smartOrderRouter = (
         paths,
         maxPools
     );
-    console.log('@@@@@@sorClass: smartOrderRouter() 234 ');
+    console.log(
+        '@@@@@@sorClass: smartOrderRouter() highestLimitAmounts=',
+        highestLimitAmounts
+    );
     //  We use the highest limits to define the initial number of pools considered and the initial guess for swapAmounts. If the
     //  highest_limit is lower than totalSwapAmount, then we should obviously not waste time trying to calculate the SOR suggestion for 1 pool,
     //  Same for 2, 3 pools etc.
@@ -144,9 +147,18 @@ const smartOrderRouter = (
             .reduce((a, b) => a.plus(b));
         console.log(
             '@@@@@@sorClass: smartOrderRouter() sumHighestLimitAmounts= ',
-            sumHighestLimitAmounts
+            sumHighestLimitAmounts.toString()
         );
-        if (totalSwapAmount.gt(sumHighestLimitAmounts)) continue; // the i initial pools are not enough to get to totalSwapAmount, continue
+        console.log(
+            '@@@@@@sorClass: smartOrderRouter() totalSwapAmount= ',
+            totalSwapAmount.toString()
+        );
+        if (totalSwapAmount.gt(sumHighestLimitAmounts)) {
+            console.log(
+                '@@@@@@sorClass: smartOrderRouter() totalSwapAmount.gt(sumHighestLimitAmounts) '
+            );
+            continue; // the i initial pools are not enough to get to totalSwapAmount, continue
+        }
         //  If above is false, it means we have enough liquidity with first i pools
         initialNumPaths = i + 1;
         swapAmounts = highestLimitAmounts.slice(0, initialNumPaths);
@@ -162,12 +174,16 @@ const smartOrderRouter = (
         //  so we are sure that the sum of swapAmounts will be equal to totalSwapAmount
         let difference = sumHighestLimitAmounts.minus(totalSwapAmount);
         console.log(
+            '@@@@@@sorClass: smartorderRouter() difference=',
+            difference.toString()
+        );
+        console.log(
             '@@@@@@sorClass: smartOrderRouter() sumHighestLimitAmounts= ',
-            sumHighestLimitAmounts
+            sumHighestLimitAmounts.toString()
         );
         console.log(
             '@@@@@@sorClass: smartOrderRouter() totalSwapAmount= ',
-            totalSwapAmount
+            totalSwapAmount.toString()
         );
         console.log(
             '@@@@@@sorClass: smartOrderRouter() difference= ',
@@ -182,6 +198,7 @@ const smartOrderRouter = (
         initialNumPaths
     );
     if (initialNumPaths == -1) {
+        console.log('@@@@@@sorClass: smartOrderRouter() return null!!! ');
         return [[], bmath_1.ZERO, bmath_1.ZERO, bmath_1.ZERO]; // Not enough liquidity, return empty
     }
     console.log('@@@@@@sorClass: smartOrderRouter() 345 ');
