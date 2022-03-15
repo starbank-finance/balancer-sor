@@ -510,14 +510,18 @@ class SOR {
             // swapExactIn - total = total amount swap will return of tokenOut
             // swapExactOut - total = total amount of tokenIn required for swap
             let swaps, total, totalConsideringFees;
-            // [swaps, total, marketSp, totalConsideringFees] = smartOrderRouter(
-            //     JSON.parse(JSON.stringify(pools)), // Need to keep original pools for cache
-            //     paths,
-            //     swapType,
-            //     swapAmt,
-            //     this.maxPools,
-            //     costOutputToken
-            // );
+            [swaps, total, marketSp, totalConsideringFees] =
+                index_1.smartOrderRouter(
+                    JSON.parse(JSON.stringify(pools)), // Need to keep original pools for cache
+                    paths,
+                    swapType,
+                    swapAmt,
+                    this.maxPools,
+                    costOutputToken
+                );
+            console.log('@@@@@@@@wrapper.ts:processSwaps paths:', paths);
+            console.log('@@@@@@@@wrapper.ts:processSwaps pools:', pools);
+            console.log('@@@@@@@@wrapper.ts:processSwaps swaps:', swaps);
             console.log(
                 '@@@@@@@@wrapper.ts:processSwaps totalConsideringFees:',
                 totalConsideringFees

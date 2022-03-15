@@ -110,6 +110,18 @@ const smartOrderRouter = (
     let bestTotalReturnConsideringFees = new bignumber_1.BigNumber(0);
     let totalReturn, totalReturnConsideringFees;
     let bestSwapAmounts, bestPaths, swapAmounts;
+    console.log(
+        '@@@@@@sorClass: smartOrderRouter() paths.length = ',
+        paths.length
+    );
+    console.log(
+        '@@@@@@sorClass: smartOrderRouter() totalSwapAmount.isZero() = ',
+        totalSwapAmount.isZero()
+    );
+    console.log(
+        '@@@@@@sorClass: smartOrderRouter() totalSwapAmount = ',
+        totalSwapAmount
+    );
     // No paths available or totalSwapAmount == 0, return empty solution
     if (paths.length == 0 || totalSwapAmount.isZero()) {
         return [[], bmath_1.ZERO, bmath_1.ZERO, bmath_1.ZERO];
