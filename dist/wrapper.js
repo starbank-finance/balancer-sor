@@ -506,6 +506,26 @@ class SOR {
                 '@@@@@@@@wrapper.ts:processSwaps totalConsideringFees. paths=',
                 paths
             );
+            console.log(
+                '@@@@@@@@wrapper.ts:processSwaps totalConsideringFees. this.maxPools=',
+                this.maxPools
+            );
+            console.log(
+                '@@@@@@@@wrapper.ts:processSwaps totalConsideringFees. this.maxPools=',
+                this.maxPools
+            );
+            console.log(
+                '@@@@@@@@wrapper.ts:processSwaps totalConsideringFees. this.maxPools=',
+                this.maxPools
+            );
+            console.log(
+                '@@@@@@@@wrapper.ts:processSwaps totalConsideringFees. costOutputToken=',
+                costOutputToken
+            );
+            console.log(
+                '@@@@@@@@wrapper.ts:processSwaps totalConsideringFees. swapType=',
+                swapType
+            );
             // Returns list of swaps
             // swapExactIn - total = total amount swap will return of tokenOut
             // swapExactOut - total = total amount of tokenIn required for swap

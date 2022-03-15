@@ -110,6 +110,7 @@ const smartOrderRouter = (
     let bestTotalReturnConsideringFees = new bignumber_1.BigNumber(0);
     let totalReturn, totalReturnConsideringFees;
     let bestSwapAmounts, bestPaths, swapAmounts;
+    console.log('@@@@@@sorClass: smartOrderRouter() maxPools = ', maxPools);
     console.log(
         '@@@@@@sorClass: smartOrderRouter() paths.length = ',
         paths.length
@@ -137,20 +138,49 @@ const smartOrderRouter = (
     //  Same for 2, 3 pools etc.
     let initialNumPaths = -1; // Initializing
     for (let i = 0; i < maxPools; i++) {
+        console.log('@@@@@@sorClass: smartOrderRouter() 234 i=', i);
         let sumHighestLimitAmounts = highestLimitAmounts
             .slice(0, i + 1)
             .reduce((a, b) => a.plus(b));
+        console.log(
+            '@@@@@@sorClass: smartOrderRouter() sumHighestLimitAmounts= ',
+            sumHighestLimitAmounts
+        );
         if (totalSwapAmount.gt(sumHighestLimitAmounts)) continue; // the i initial pools are not enough to get to totalSwapAmount, continue
         //  If above is false, it means we have enough liquidity with first i pools
         initialNumPaths = i + 1;
         swapAmounts = highestLimitAmounts.slice(0, initialNumPaths);
+        console.log(
+            '@@@@@@sorClass: smartOrderRouter() swapAmounts= ',
+            swapAmounts
+        );
+        console.log(
+            '@@@@@@sorClass: smartOrderRouter() initialNumPaths= ',
+            initialNumPaths
+        );
         //  Since the sum of the first i highest limits will be less than totalSwapAmount, we remove the difference to the last swapAmount
         //  so we are sure that the sum of swapAmounts will be equal to totalSwapAmount
         let difference = sumHighestLimitAmounts.minus(totalSwapAmount);
+        console.log(
+            '@@@@@@sorClass: smartOrderRouter() sumHighestLimitAmounts= ',
+            sumHighestLimitAmounts
+        );
+        console.log(
+            '@@@@@@sorClass: smartOrderRouter() totalSwapAmount= ',
+            totalSwapAmount
+        );
+        console.log(
+            '@@@@@@sorClass: smartOrderRouter() difference= ',
+            difference
+        );
         swapAmounts[swapAmounts.length - 1] =
             swapAmounts[swapAmounts.length - 1].minus(difference);
         break; // No need to keep looping as this number of pools (i) has enough liquidity
     }
+    console.log(
+        '@@@@@@sorClass: smartOrderRouter() initialNumPaths= ',
+        initialNumPaths
+    );
     if (initialNumPaths == -1) {
         return [[], bmath_1.ZERO, bmath_1.ZERO, bmath_1.ZERO]; // Not enough liquidity, return empty
     }
