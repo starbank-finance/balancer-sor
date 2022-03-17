@@ -1,6 +1,5 @@
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
-exports.ElementPool = void 0;
 const types_1 = require('../../types');
 const address_1 = require('@ethersproject/address');
 const bmath_1 = require('../../bmath');
@@ -61,7 +60,7 @@ class ElementPool {
         }
         if (pairType != types_1.PairTypes.BptToToken) {
             tokenIndexIn = this.tokens.findIndex(
-                (t) =>
+                t =>
                     address_1.getAddress(t.address) ===
                     address_1.getAddress(tokenIn)
             );
@@ -72,7 +71,7 @@ class ElementPool {
         }
         if (pairType != types_1.PairTypes.TokenToBpt) {
             tokenIndexOut = this.tokens.findIndex(
-                (t) =>
+                t =>
                     address_1.getAddress(t.address) ===
                     address_1.getAddress(tokenOut)
             );
@@ -151,7 +150,7 @@ class ElementPool {
             this.totalShares = newBalance.toString();
         } else {
             // token is underlying in the pool
-            const T = this.tokens.find((t) => t.address === token);
+            const T = this.tokens.find(t => t.address === token);
             T.balance = newBalance.toString();
         }
     }

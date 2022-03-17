@@ -1,15 +1,15 @@
 'use strict';
 var __awaiter =
     (this && this.__awaiter) ||
-    function (thisArg, _arguments, P, generator) {
+    function(thisArg, _arguments, P, generator) {
         function adopt(value) {
             return value instanceof P
                 ? value
-                : new P(function (resolve) {
+                : new P(function(resolve) {
                       resolve(value);
                   });
         }
-        return new (P || (P = Promise))(function (resolve, reject) {
+        return new (P || (P = Promise))(function(resolve, reject) {
             function fulfilled(value) {
                 try {
                     step(generator.next(value));
@@ -36,16 +36,10 @@ var __awaiter =
     };
 var __importDefault =
     (this && this.__importDefault) ||
-    function (mod) {
+    function(mod) {
         return mod && mod.__esModule ? mod : { default: mod };
     };
 Object.defineProperty(exports, '__esModule', { value: true });
-exports.getLidoStaticSwaps =
-    exports.getStEthRate =
-    exports.isLidoStableSwap =
-    exports.Routes =
-    exports.Lido =
-        void 0;
 const contracts_1 = require('@ethersproject/contracts');
 const types_1 = require('../../types');
 const pools_1 = require('../../pools');
@@ -908,7 +902,7 @@ function isLidoStableSwap(chainId, tokenIn, tokenOut) {
 exports.isLidoStableSwap = isLidoStableSwap;
 // Uses Vault queryBatchSwap to get return amount for swap
 function queryBatchSwap(swapType, swaps, assets, provider) {
-    return __awaiter(this, void 0, void 0, function* () {
+    return __awaiter(this, void 0, void 0, function*() {
         const vaultAddr = '0xBA12222222228d8Ba445958a75a0704d566BF2C8';
         const vaultContract = new contracts_1.Contract(
             vaultAddr,
@@ -951,7 +945,7 @@ function calculateMarketSp(swapType, swaps, assets, pools) {
     for (let i = 0; i < swaps.length; i++) {
         const swap = swaps[i];
         // Find matching pool from list so we can use balances, etc
-        const pool = pools.pools.filter((p) => p.id === swap.poolId);
+        const pool = pools.pools.filter(p => p.id === swap.poolId);
         if (pool.length !== 1) return bmath_1.bnum(0);
         // This will get a specific pool type so we can call parse and spot price functions
         const newPool = pools_1.parseNewPool(pool[0]);
@@ -981,7 +975,7 @@ function calculateMarketSp(swapType, swaps, assets, pools) {
     return spotPrices.reduce((a, b) => a.times(b));
 }
 function getStEthRate(provider, chainId) {
-    return __awaiter(this, void 0, void 0, function* () {
+    return __awaiter(this, void 0, void 0, function*() {
         // Call stEthPerToken or tokensPerStETH to get the scaling factors in each direction.
         const wstETHContract = new contracts_1.Contract(
             exports.Lido.wstETH[chainId],
@@ -1006,7 +1000,7 @@ function getLidoStaticSwaps(
     swapAmount,
     provider
 ) {
-    return __awaiter(this, void 0, void 0, function* () {
+    return __awaiter(this, void 0, void 0, function*() {
         // Check for stETH tokens and convert to use wstETH for routing
         let isWrappingIn,
             isWrappingOut = false;

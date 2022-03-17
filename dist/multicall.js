@@ -1,15 +1,15 @@
 'use strict';
 var __awaiter =
     (this && this.__awaiter) ||
-    function (thisArg, _arguments, P, generator) {
+    function(thisArg, _arguments, P, generator) {
         function adopt(value) {
             return value instanceof P
                 ? value
-                : new P(function (resolve) {
+                : new P(function(resolve) {
                       resolve(value);
                   });
         }
-        return new (P || (P = Promise))(function (resolve, reject) {
+        return new (P || (P = Promise))(function(resolve, reject) {
             function fulfilled(value) {
                 try {
                     step(generator.next(value));
@@ -36,11 +36,10 @@ var __awaiter =
     };
 var __importDefault =
     (this && this.__importDefault) ||
-    function (mod) {
+    function(mod) {
         return mod && mod.__esModule ? mod : { default: mod };
     };
 Object.defineProperty(exports, '__esModule', { value: true });
-exports.getOnChainBalances = void 0;
 const bmath_1 = require('./bmath');
 const multicaller_1 = require('./utils/multicaller');
 const lodash_1 = __importDefault(require('lodash'));
@@ -51,7 +50,7 @@ function getOnChainBalances(
     vaultAddress,
     provider
 ) {
-    return __awaiter(this, void 0, void 0, function* () {
+    return __awaiter(this, void 0, void 0, function*() {
         if (subgraphPools.pools.length === 0) return subgraphPools;
         const vaultAbi = require('./abi/Vault.json');
         const weightedPoolAbi = require('./pools/weightedPool/weightedPoolAbi.json');
@@ -64,7 +63,7 @@ function getOnChainBalances(
                     ...weightedPoolAbi,
                     ...stablePoolAbi,
                     ...elementPoolAbi,
-                ].map((row) => [row.name, row])
+                ].map(row => [row.name, row])
             )
         );
         const multiPool = new multicaller_1.Multicaller(
@@ -133,7 +132,7 @@ function getOnChainBalances(
             }
         });
         pools = yield multiPool.execute(pools);
-        subgraphPools.pools.forEach((subgraphPool) => {
+        subgraphPools.pools.forEach(subgraphPool => {
             const onChainResult = pools[subgraphPool.id];
             try {
                 subgraphPool.swapFee = bmath_1
@@ -144,7 +143,7 @@ function getOnChainBalances(
                         .toString()
                         .toLowerCase();
                     const T = subgraphPool.tokens.find(
-                        (t) => t.address === tokenAddress
+                        t => t.address === tokenAddress
                     );
                     const balance = bmath_1
                         .scale(

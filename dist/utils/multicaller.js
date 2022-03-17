@@ -1,15 +1,15 @@
 'use strict';
 var __awaiter =
     (this && this.__awaiter) ||
-    function (thisArg, _arguments, P, generator) {
+    function(thisArg, _arguments, P, generator) {
         function adopt(value) {
             return value instanceof P
                 ? value
-                : new P(function (resolve) {
+                : new P(function(resolve) {
                       resolve(value);
                   });
         }
-        return new (P || (P = Promise))(function (resolve, reject) {
+        return new (P || (P = Promise))(function(resolve, reject) {
             function fulfilled(value) {
                 try {
                     step(generator.next(value));
@@ -36,16 +36,15 @@ var __awaiter =
     };
 var __importDefault =
     (this && this.__importDefault) ||
-    function (mod) {
+    function(mod) {
         return mod && mod.__esModule ? mod : { default: mod };
     };
 Object.defineProperty(exports, '__esModule', { value: true });
-exports.Multicaller = exports.multicall = exports.call = void 0;
 const lodash_1 = __importDefault(require('lodash'));
 const contracts_1 = require('@ethersproject/contracts');
 const abi_1 = require('@ethersproject/abi');
 function call(provider, abi, call, options) {
-    return __awaiter(this, void 0, void 0, function* () {
+    return __awaiter(this, void 0, void 0, function*() {
         const contract = new contracts_1.Contract(call[0], abi, provider);
         try {
             const params = call[2] || [];
@@ -57,7 +56,7 @@ function call(provider, abi, call, options) {
 }
 exports.call = call;
 function multicall(multiAddress, provider, abi, calls, options) {
-    return __awaiter(this, void 0, void 0, function* () {
+    return __awaiter(this, void 0, void 0, function*() {
         const multicallAbi = require('../abi/Multicall.json');
         const multi = new contracts_1.Contract(
             multiAddress,
@@ -67,7 +66,7 @@ function multicall(multiAddress, provider, abi, calls, options) {
         const itf = new abi_1.Interface(abi);
         try {
             const [, res] = yield multi.aggregate(
-                calls.map((call) => [
+                calls.map(call => [
                     call[0].toLowerCase(),
                     itf.encodeFunctionData(call[1], call[2]),
                 ]),
@@ -98,7 +97,7 @@ class Multicaller {
         return this;
     }
     execute(from) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function*() {
             const obj = from || {};
             const result = yield multicall(
                 this.multiAddress,

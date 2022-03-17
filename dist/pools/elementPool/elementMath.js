@@ -1,13 +1,5 @@
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
-exports.getTimeTillExpiry =
-    exports._derivativeSpotPriceAfterSwapTokenInForExactTokenOut =
-    exports._derivativeSpotPriceAfterSwapExactTokenInForTokenOut =
-    exports._spotPriceAfterSwapTokenInForExactTokenOut =
-    exports._spotPriceAfterSwapExactTokenInForTokenOut =
-    exports._tokenInForExactTokenOut =
-    exports._exactTokenInForTokenOut =
-        void 0;
 const bmath_1 = require('../../bmath');
 // calc_out_given_in (swap)
 function _exactTokenInForTokenOut(amount, poolPairData) {
@@ -118,8 +110,7 @@ function _spotPriceAfterSwapExactTokenInForTokenOut(amount, poolPairData) {
                     f)
     );
 }
-exports._spotPriceAfterSwapExactTokenInForTokenOut =
-    _spotPriceAfterSwapExactTokenInForTokenOut;
+exports._spotPriceAfterSwapExactTokenInForTokenOut = _spotPriceAfterSwapExactTokenInForTokenOut;
 // PairType = 'token->token'
 // SwapType = 'swapExactOut'
 function _spotPriceAfterSwapTokenInForExactTokenOut(amount, poolPairData) {
@@ -153,8 +144,7 @@ function _spotPriceAfterSwapTokenInForExactTokenOut(amount, poolPairData) {
                 f
     );
 }
-exports._spotPriceAfterSwapTokenInForExactTokenOut =
-    _spotPriceAfterSwapTokenInForExactTokenOut;
+exports._spotPriceAfterSwapTokenInForExactTokenOut = _spotPriceAfterSwapTokenInForExactTokenOut;
 /////////
 ///  Derivatives of spotPriceAfterSwap
 /////////
@@ -238,8 +228,7 @@ function _derivativeSpotPriceAfterSwapExactTokenInForTokenOut(
         )
     );
 }
-exports._derivativeSpotPriceAfterSwapExactTokenInForTokenOut =
-    _derivativeSpotPriceAfterSwapExactTokenInForTokenOut;
+exports._derivativeSpotPriceAfterSwapExactTokenInForTokenOut = _derivativeSpotPriceAfterSwapExactTokenInForTokenOut;
 // PairType = 'token->token'
 // SwapType = 'swapExactOut'
 function _derivativeSpotPriceAfterSwapTokenInForExactTokenOut(
@@ -295,8 +284,7 @@ function _derivativeSpotPriceAfterSwapTokenInForExactTokenOut(
                 )
     );
 }
-exports._derivativeSpotPriceAfterSwapTokenInForExactTokenOut =
-    _derivativeSpotPriceAfterSwapTokenInForExactTokenOut;
+exports._derivativeSpotPriceAfterSwapTokenInForExactTokenOut = _derivativeSpotPriceAfterSwapTokenInForExactTokenOut;
 function getTimeTillExpiry(expiryTime, currentBlockTimestamp, unitSeconds) {
     let t =
         currentBlockTimestamp < expiryTime

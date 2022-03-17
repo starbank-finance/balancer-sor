@@ -1,15 +1,15 @@
 'use strict';
 var __awaiter =
     (this && this.__awaiter) ||
-    function (thisArg, _arguments, P, generator) {
+    function(thisArg, _arguments, P, generator) {
         function adopt(value) {
             return value instanceof P
                 ? value
-                : new P(function (resolve) {
+                : new P(function(resolve) {
                       resolve(value);
                   });
         }
-        return new (P || (P = Promise))(function (resolve, reject) {
+        return new (P || (P = Promise))(function(resolve, reject) {
             function fulfilled(value) {
                 try {
                     step(generator.next(value));
@@ -35,7 +35,6 @@ var __awaiter =
         });
     };
 Object.defineProperty(exports, '__esModule', { value: true });
-exports.SOR = void 0;
 const bignumber_1 = require('./utils/bignumber');
 const bmath_1 = require('./bmath');
 const index_1 = require('./index');
@@ -76,7 +75,7 @@ class SOR {
     If cost is passed then it manually sets the value.
     */
     setCostOutputToken(tokenOut, tokenDecimals, cost = null) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function*() {
             tokenOut = tokenOut.toLowerCase();
             if (cost === null) {
                 // Handle ETH/WETH cost
@@ -85,7 +84,9 @@ class SOR {
                     tokenOut.toLowerCase() ===
                         index_1.WETHADDR[this.chainId].toLowerCase()
                 ) {
-                    this.tokenCost[tokenOut.toLowerCase()] = this.gasPrice
+                    this.tokenCost[
+                        tokenOut.toLowerCase()
+                    ] = this.gasPrice
                         .times(this.swapCost)
                         .div(index_1.bnum(Math.pow(10, 18)));
                     return this.tokenCost[tokenOut.toLowerCase()];
@@ -116,7 +117,7 @@ class SOR {
     If pools url was passed in to constructor - uses this to fetch pools source.
     */
     fetchPools(isOnChain = true, poolsData = { pools: [] }) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function*() {
             console.log('@@@@wrapper.ts:fetchPools..0');
             try {
                 // If poolsData has been passed to function these pools should be used
@@ -206,7 +207,7 @@ class SOR {
     Uses multicall contract to fetch all onchain balances for pools.
     */
     fetchOnChainBalances(subgraphPools, isOnChain = true) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function*() {
             console.log('@@wrapper.ts: fetchOnChainBalances 1');
             console.log(
                 '@@wrapper.ts: fetchOnChainBalances subgraphPools = ',
@@ -241,6 +242,7 @@ class SOR {
             // Error with multicall
             if (!onChainPools) return { pools: [] };
             console.log('@@wrapper.ts: fetchOnChainBalances 6 ');
+            console.log('@@wrapper.ts: fetchOnChainBalances 7 ');
             return onChainPools;
         });
     }
@@ -254,7 +256,7 @@ class SOR {
             timestamp: 0,
         }
     ) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function*() {
             let swapInfo = {
                 tokenAddresses: [],
                 swaps: [],
@@ -296,7 +298,7 @@ class SOR {
                 );
                 if (!(swapOptions.poolTypeFilter === index_1.PoolFilter.All))
                     pools.pools = pools.pools.filter(
-                        (p) => p.poolType === swapOptions.poolTypeFilter
+                        p => p.poolType === swapOptions.poolTypeFilter
                     );
                 console.log('@@@@@@@@wrapper.ts: getSwaps() pools=', pools);
                 console.log('@@@@@@@@wrapper.ts: getSwaps() isLidoStableSwap');
@@ -375,7 +377,7 @@ class SOR {
         useProcessCache = true,
         currentBlockTimestamp = 0
     ) {
-        return __awaiter(this, void 0, void 0, function* () {
+        return __awaiter(this, void 0, void 0, function*() {
             let swapInfo = {
                 tokenAddresses: [],
                 swaps: [],
@@ -417,10 +419,9 @@ class SOR {
             if (onChainPools.pools.length === 0) return swapInfo;
             let pools, paths, marketSp;
             // If token pair has been processed before that info can be reused to speed up execution
-            let cache =
-                this.processedDataCache[
-                    `${tokenIn}${tokenOut}${swapType}${currentBlockTimestamp}`
-                ];
+            let cache = this.processedDataCache[
+                `${tokenIn}${tokenOut}${swapType}${currentBlockTimestamp}`
+            ];
             // useProcessCache can be false to force fresh processing of paths/prices
             if (!useProcessCache || !cache) {
                 // If not previously cached we must process all paths/prices.
@@ -434,6 +435,7 @@ class SOR {
                 let poolsList = JSON.parse(JSON.stringify(onChainPools));
                 let pathData;
                 let hopTokens;
+                // // NOTE プールリストから、スワップしたい通貨ペアの関係プールと、その２通貨以外の関連通貨取得。
                 [pools, hopTokens] = index_1.filterPoolsOfInterest(
                     poolsList.pools,
                     tokenIn,
@@ -447,6 +449,7 @@ class SOR {
                     '@@@@@@@@wrapper.ts:processSwaps hopTokens:',
                     hopTokens
                 );
+                //パス作成
                 [pools, pathData] = index_1.filterHopPools(
                     tokenIn,
                     tokenOut,
@@ -458,6 +461,7 @@ class SOR {
                     '@@@@@@@@wrapper.ts:processSwaps pathData:',
                     pathData
                 );
+                //パスリミット計算
                 [paths] = index_1.calculatePathLimits(pathData, swapType);
                 console.log('@@@@@@@@wrapper.ts:processSwaps paths:', paths);
                 // Update cache if used
@@ -530,15 +534,19 @@ class SOR {
             // swapExactIn - total = total amount swap will return of tokenOut
             // swapExactOut - total = total amount of tokenIn required for swap
             let swaps, total, totalConsideringFees;
-            [swaps, total, marketSp, totalConsideringFees] =
-                index_1.smartOrderRouter(
-                    JSON.parse(JSON.stringify(pools)), // Need to keep original pools for cache
-                    paths,
-                    swapType,
-                    swapAmt,
-                    this.maxPools,
-                    costOutputToken
-                );
+            [
+                swaps,
+                total,
+                marketSp,
+                totalConsideringFees,
+            ] = index_1.smartOrderRouter(
+                JSON.parse(JSON.stringify(pools)), // Need to keep original pools for cache
+                paths,
+                swapType,
+                swapAmt,
+                this.maxPools,
+                costOutputToken
+            );
             console.log('@@@@@@@@wrapper.ts:processSwaps paths:', paths);
             console.log('@@@@@@@@wrapper.ts:processSwaps pools:', pools);
             console.log('@@@@@@@@wrapper.ts:processSwaps swaps:', swaps);

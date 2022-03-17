@@ -1,15 +1,15 @@
 'use strict';
 var __awaiter =
     (this && this.__awaiter) ||
-    function (thisArg, _arguments, P, generator) {
+    function(thisArg, _arguments, P, generator) {
         function adopt(value) {
             return value instanceof P
                 ? value
-                : new P(function (resolve) {
+                : new P(function(resolve) {
                       resolve(value);
                   });
         }
-        return new (P || (P = Promise))(function (resolve, reject) {
+        return new (P || (P = Promise))(function(resolve, reject) {
             function fulfilled(value) {
                 try {
                     step(generator.next(value));
@@ -36,11 +36,10 @@ var __awaiter =
     };
 var __importDefault =
     (this && this.__importDefault) ||
-    function (mod) {
+    function(mod) {
         return mod && mod.__esModule ? mod : { default: mod };
     };
 Object.defineProperty(exports, '__esModule', { value: true });
-exports.fetchSubgraphPools = void 0;
 const isomorphic_fetch_1 = __importDefault(require('isomorphic-fetch'));
 const SUBGRAPH_URL =
     process.env.SUBGRAPH_URL ||
@@ -48,7 +47,7 @@ const SUBGRAPH_URL =
     'https://graph-node1.starbank.finance/subgraphs/name/starbank-finance/balancer-v2';
 // Returns all public pools
 function fetchSubgraphPools(SubgraphUrl = '') {
-    return __awaiter(this, void 0, void 0, function* () {
+    return __awaiter(this, void 0, void 0, function*() {
         console.log(`@@@@fetchSubgraphPools.SubgraphUrl=`, SubgraphUrl);
         // if (SubgraphUrl.endsWith('.json')) {
         if (SubgraphUrl.indexOf('.json') !== -1) {
@@ -59,7 +58,6 @@ function fetchSubgraphPools(SubgraphUrl = '') {
                     method: 'GET',
                     headers: {
                         Accept: 'application/json',
-                        // 'Content-Type': 'application/json',
                     },
                 }
             );

@@ -1,14 +1,10 @@
 'use strict';
 var __importDefault =
     (this && this.__importDefault) ||
-    function (mod) {
+    function(mod) {
         return mod && mod.__esModule ? mod : { default: mod };
     };
 Object.defineProperty(exports, '__esModule', { value: true });
-exports.filterHopPools =
-    exports.parseNewPool =
-    exports.filterPoolsOfInterest =
-        void 0;
 const config_1 = require('./config');
 const types_1 = require('./types');
 const weightedPool_1 = require('./pools/weightedPool/weightedPool');
@@ -51,7 +47,7 @@ function filterPoolsOfInterest(
     let disabledTokens = disabled_tokens_json_1.default.tokens;
     if (disabledOptions.isOverRide)
         disabledTokens = disabledOptions.disabledTokens;
-    allPools.forEach((pool) => {
+    allPools.forEach(pool => {
         if (pool.tokensList.length === 0 || pool.tokens[0].balance === '0') {
             return;
         }
@@ -61,7 +57,7 @@ function filterPoolsOfInterest(
         // Depending on env file, we add the BPT as well as
         // we can join/exit as part of the multihop
         if (config_1.ALLOW_ADD_REMOVE) tokenListSet.add(pool.address);
-        disabledTokens.forEach((token) => tokenListSet.delete(token.address));
+        disabledTokens.forEach(token => tokenListSet.delete(token.address));
         // This is a direct pool as has both tokenIn and tokenOut
         if (
             (tokenListSet.has(tokenIn) && tokenListSet.has(tokenOut)) ||
@@ -95,7 +91,7 @@ function filterPoolsOfInterest(
         }
     });
     // We find the intersection of the two previous sets so we can trade tokenIn for tokenOut with 1 multi-hop
-    const hopTokensSet = [...tokenInPairedTokens].filter((x) =>
+    const hopTokensSet = [...tokenInPairedTokens].filter(x =>
         tokenOutPairedTokens.has(x)
     );
     // Transform set into Array
@@ -221,8 +217,9 @@ function filterHopPools(tokenIn, tokenOut, hopTokens, poolsOfInterest) {
                     hopTokens[i]
                 );
                 // const normalizedLiquidity = pool.getNormalizedLiquidity(tokenIn, hopTokens[i]);
-                const normalizedLiquidity =
-                    pool.getNormalizedLiquidity(poolPairData);
+                const normalizedLiquidity = pool.getNormalizedLiquidity(
+                    poolPairData
+                );
                 // Cannot be strictly greater otherwise highestNormalizedLiquidityPoolId = 0 if hopTokens[i] balance is 0 in this pool.
                 if (
                     normalizedLiquidity.isGreaterThanOrEqualTo(
@@ -238,8 +235,9 @@ function filterHopPools(tokenIn, tokenOut, hopTokens, poolsOfInterest) {
                     tokenOut
                 );
                 // const normalizedLiquidity = pool.getNormalizedLiquidity(hopTokens[i], tokenOut);
-                const normalizedLiquidity =
-                    pool.getNormalizedLiquidity(poolPairData);
+                const normalizedLiquidity = pool.getNormalizedLiquidity(
+                    poolPairData
+                );
                 // Cannot be strictly greater otherwise highestNormalizedLiquidityPoolId = 0 if hopTokens[i] balance is 0 in this pool.
                 if (
                     normalizedLiquidity.isGreaterThanOrEqualTo(

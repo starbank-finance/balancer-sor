@@ -256,6 +256,7 @@ export class SOR {
         // Error with multicall
         if (!onChainPools) return { pools: [] };
         console.log('@@wrapper.ts: fetchOnChainBalances 6 ');
+        console.log('@@wrapper.ts: fetchOnChainBalances 7 ');
 
         return onChainPools;
     }
@@ -306,7 +307,7 @@ export class SOR {
             let pools = JSON.parse(JSON.stringify(this.onChainBalanceCache));
             if (!(swapOptions.poolTypeFilter === PoolFilter.All))
                 pools.pools = pools.pools.filter(
-                    (p) => p.poolType === swapOptions.poolTypeFilter
+                    p => p.poolType === swapOptions.poolTypeFilter
                 );
             console.log('@@@@@@@@wrapper.ts: getSwaps() pools=', pools);
             console.log('@@@@@@@@wrapper.ts: getSwaps() isLidoStableSwap');
@@ -424,10 +425,9 @@ export class SOR {
         let pools: PoolDictionary, paths: NewPath[], marketSp: BigNumber;
 
         // If token pair has been processed before that info can be reused to speed up execution
-        let cache =
-            this.processedDataCache[
-                `${tokenIn}${tokenOut}${swapType}${currentBlockTimestamp}`
-            ];
+        let cache = this.processedDataCache[
+            `${tokenIn}${tokenOut}${swapType}${currentBlockTimestamp}`
+        ];
 
         // useProcessCache can be false to force fresh processing of paths/prices
         if (!useProcessCache || !cache) {
@@ -443,6 +443,7 @@ export class SOR {
             let poolsList = JSON.parse(JSON.stringify(onChainPools));
             let pathData: NewPath[];
             let hopTokens: string[];
+            // // NOTE プールリストから、スワップしたい通貨ペアの関係プールと、その２通貨以外の関連通貨取得。
             [pools, hopTokens] = filterPoolsOfInterest(
                 poolsList.pools,
                 tokenIn,
@@ -457,6 +458,7 @@ export class SOR {
                 '@@@@@@@@wrapper.ts:processSwaps hopTokens:',
                 hopTokens
             );
+            //パス作成
             [pools, pathData] = filterHopPools(
                 tokenIn,
                 tokenOut,
@@ -466,6 +468,7 @@ export class SOR {
             console.log('@@@@@@@@wrapper.ts:processSwaps pools:', pools);
             console.log('@@@@@@@@wrapper.ts:processSwaps pathData:', pathData);
 
+            //パスリミット計算
             [paths] = calculatePathLimits(pathData, swapType);
             console.log('@@@@@@@@wrapper.ts:processSwaps paths:', paths);
 

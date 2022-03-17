@@ -1,10 +1,5 @@
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
-exports.VAULTADDR =
-    exports.MULTIADDR =
-    exports.WETHADDR =
-    exports.EMPTY_SWAPINFO =
-        void 0;
 const bignumber_1 = require('./utils/bignumber');
 const Zero = new bignumber_1.BigNumber(0);
 exports.EMPTY_SWAPINFO = {

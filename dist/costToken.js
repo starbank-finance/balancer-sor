@@ -1,15 +1,15 @@
 'use strict';
 var __awaiter =
     (this && this.__awaiter) ||
-    function (thisArg, _arguments, P, generator) {
+    function(thisArg, _arguments, P, generator) {
         function adopt(value) {
             return value instanceof P
                 ? value
-                : new P(function (resolve) {
+                : new P(function(resolve) {
                       resolve(value);
                   });
         }
-        return new (P || (P = Promise))(function (resolve, reject) {
+        return new (P || (P = Promise))(function(resolve, reject) {
             function fulfilled(value) {
                 try {
                     step(generator.next(value));
@@ -35,12 +35,6 @@ var __awaiter =
         });
     };
 Object.defineProperty(exports, '__esModule', { value: true });
-exports.getCostOutputToken =
-    exports.calculateTotalSwapCost =
-    exports.getTokenWeiPrice =
-    exports.getOnChainReserves =
-    exports.getAddress =
-        void 0;
 const address_1 = require('@ethersproject/address');
 const contracts_1 = require('@ethersproject/contracts');
 const solidity_1 = require('@ethersproject/solidity');
@@ -69,21 +63,24 @@ function getAddress(tokenA, tokenB) {
 }
 exports.getAddress = getAddress;
 function getOnChainReserves(PairAddr, provider) {
-    return __awaiter(this, void 0, void 0, function* () {
+    return __awaiter(this, void 0, void 0, function*() {
         const uniswapV2PairAbi = require('./abi/UniswapV2Pair.json');
         const pairContract = new contracts_1.Contract(
             PairAddr,
             uniswapV2PairAbi,
             provider
         );
-        let [reserve0, reserve1, blockTimestamp] =
-            yield pairContract.getReserves();
+        let [
+            reserve0,
+            reserve1,
+            blockTimestamp,
+        ] = yield pairContract.getReserves();
         return [reserve0, reserve1];
     });
 }
 exports.getOnChainReserves = getOnChainReserves;
 function getTokenWeiPrice(TokenAddr, provider) {
-    return __awaiter(this, void 0, void 0, function* () {
+    return __awaiter(this, void 0, void 0, function*() {
         // const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
         const WETH = '0xAeaaf0e2c81Af264101B9129C00F4440cCF0F720';
         if (TokenAddr.toLowerCase() === WETH.toLowerCase())
@@ -98,7 +95,9 @@ function getTokenWeiPrice(TokenAddr, provider) {
 }
 exports.getTokenWeiPrice = getTokenWeiPrice;
 function calculateTotalSwapCost(TokenPrice, SwapCost, GasPriceWei) {
-    return GasPriceWei.times(SwapCost).times(TokenPrice).div(bmath_1.BONE);
+    return GasPriceWei.times(SwapCost)
+        .times(TokenPrice)
+        .div(bmath_1.BONE);
 }
 exports.calculateTotalSwapCost = calculateTotalSwapCost;
 function getCostOutputToken(
@@ -108,7 +107,7 @@ function getCostOutputToken(
     Provider,
     ChainId = undefined
 ) {
-    return __awaiter(this, void 0, void 0, function* () {
+    return __awaiter(this, void 0, void 0, function*() {
         if (!ChainId) {
             let network = yield Provider.getNetwork();
             ChainId = network.chainId;

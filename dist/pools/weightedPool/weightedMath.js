@@ -1,24 +1,5 @@
 'use strict';
 Object.defineProperty(exports, '__esModule', { value: true });
-exports._derivativeSpotPriceAfterSwapBPTInForExactTokenOut =
-    exports._derivativeSpotPriceAfterSwapExactBPTInForTokenOut =
-    exports._derivativeSpotPriceAfterSwapTokenInForExactBPTOut =
-    exports._derivativeSpotPriceAfterSwapExactTokenInForBPTOut =
-    exports._derivativeSpotPriceAfterSwapTokenInForExactTokenOut =
-    exports._derivativeSpotPriceAfterSwapExactTokenInForTokenOut =
-    exports._spotPriceAfterSwapBPTInForExactTokenOut =
-    exports._spotPriceAfterSwapExactBPTInForTokenOut =
-    exports._spotPriceAfterSwapTokenInForExactBPTOut =
-    exports._spotPriceAfterSwapExactTokenInForBPTOut =
-    exports._spotPriceAfterSwapTokenInForExactTokenOut =
-    exports._spotPriceAfterSwapExactTokenInForTokenOut =
-    exports._exactBPTInForTokenOut =
-    exports._BPTInForExactTokenOut =
-    exports._tokenInForExactBPTOut =
-    exports._exactTokenInForBPTOut =
-    exports._tokenInForExactTokenOut =
-    exports._exactTokenInForTokenOut =
-        void 0;
 const bmath_1 = require('../../bmath');
 // All functions came from https://www.wolframcloud.com/obj/fernando.martinel/Published/SOR_equations_published.nb
 /////////
@@ -139,8 +120,7 @@ function _spotPriceAfterSwapExactTokenInForTokenOut(amount, poolPairData) {
         )
     );
 }
-exports._spotPriceAfterSwapExactTokenInForTokenOut =
-    _spotPriceAfterSwapExactTokenInForTokenOut;
+exports._spotPriceAfterSwapExactTokenInForTokenOut = _spotPriceAfterSwapExactTokenInForTokenOut;
 // PairType = 'token->token'
 // SwapType = 'swapExactOut'
 function _spotPriceAfterSwapTokenInForExactTokenOut(amount, poolPairData) {
@@ -157,8 +137,7 @@ function _spotPriceAfterSwapTokenInForExactTokenOut(amount, poolPairData) {
         )
     );
 }
-exports._spotPriceAfterSwapTokenInForExactTokenOut =
-    _spotPriceAfterSwapTokenInForExactTokenOut;
+exports._spotPriceAfterSwapTokenInForExactTokenOut = _spotPriceAfterSwapTokenInForExactTokenOut;
 // PairType = 'token->BPT'
 // SwapType = 'swapExactIn'
 function _spotPriceAfterSwapExactTokenInForBPTOut(amount, poolPairData) {
@@ -172,8 +151,7 @@ function _spotPriceAfterSwapExactTokenInForBPTOut(amount, poolPairData) {
             (Bbpt * (1 + f * (-1 + wi)) * wi)
     );
 }
-exports._spotPriceAfterSwapExactTokenInForBPTOut =
-    _spotPriceAfterSwapExactTokenInForBPTOut;
+exports._spotPriceAfterSwapExactTokenInForBPTOut = _spotPriceAfterSwapExactTokenInForBPTOut;
 // PairType = 'token->BPT'
 // SwapType = 'swapExactOut'
 function _spotPriceAfterSwapTokenInForExactBPTOut(amount, poolPairData) {
@@ -187,8 +165,7 @@ function _spotPriceAfterSwapTokenInForExactBPTOut(amount, poolPairData) {
             ((Aobpt + Bbpt) * (1 + f * (-1 + wi)) * wi)
     );
 }
-exports._spotPriceAfterSwapTokenInForExactBPTOut =
-    _spotPriceAfterSwapTokenInForExactBPTOut;
+exports._spotPriceAfterSwapTokenInForExactBPTOut = _spotPriceAfterSwapTokenInForExactBPTOut;
 // PairType = 'BPT->token'
 // SwapType = 'swapExactIn'
 function _spotPriceAfterSwapExactBPTInForTokenOut(amount, poolPairData) {
@@ -205,8 +182,7 @@ function _spotPriceAfterSwapExactBPTInForTokenOut(amount, poolPairData) {
             Bo
     );
 }
-exports._spotPriceAfterSwapExactBPTInForTokenOut =
-    _spotPriceAfterSwapExactBPTInForTokenOut;
+exports._spotPriceAfterSwapExactBPTInForTokenOut = _spotPriceAfterSwapExactBPTInForTokenOut;
 // PairType = 'BPT->token'
 // SwapType = 'swapExactOut'
 function _spotPriceAfterSwapBPTInForExactTokenOut(amount, poolPairData) {
@@ -223,8 +199,7 @@ function _spotPriceAfterSwapBPTInForExactTokenOut(amount, poolPairData) {
             Bo
     );
 }
-exports._spotPriceAfterSwapBPTInForExactTokenOut =
-    _spotPriceAfterSwapBPTInForExactTokenOut;
+exports._spotPriceAfterSwapBPTInForExactTokenOut = _spotPriceAfterSwapBPTInForExactTokenOut;
 /////////
 ///  Derivatives of spotPriceAfterSwap
 /////////
@@ -244,8 +219,7 @@ function _derivativeSpotPriceAfterSwapExactTokenInForTokenOut(
         (wi + wo) / (Bo * Math.pow(Bi / (Ai + Bi - Ai * f), wi / wo) * wi)
     );
 }
-exports._derivativeSpotPriceAfterSwapExactTokenInForTokenOut =
-    _derivativeSpotPriceAfterSwapExactTokenInForTokenOut;
+exports._derivativeSpotPriceAfterSwapExactTokenInForTokenOut = _derivativeSpotPriceAfterSwapExactTokenInForTokenOut;
 // PairType = 'token->token'
 // SwapType = 'swapExactOut'
 function _derivativeSpotPriceAfterSwapTokenInForExactTokenOut(
@@ -265,8 +239,7 @@ function _derivativeSpotPriceAfterSwapTokenInForExactTokenOut(
         )
     );
 }
-exports._derivativeSpotPriceAfterSwapTokenInForExactTokenOut =
-    _derivativeSpotPriceAfterSwapTokenInForExactTokenOut;
+exports._derivativeSpotPriceAfterSwapTokenInForExactTokenOut = _derivativeSpotPriceAfterSwapTokenInForExactTokenOut;
 // PairType = 'token->BPT'
 // SwapType = 'swapExactIn'
 function _derivativeSpotPriceAfterSwapExactTokenInForBPTOut(
@@ -285,8 +258,7 @@ function _derivativeSpotPriceAfterSwapExactTokenInForBPTOut(
         )
     );
 }
-exports._derivativeSpotPriceAfterSwapExactTokenInForBPTOut =
-    _derivativeSpotPriceAfterSwapExactTokenInForBPTOut;
+exports._derivativeSpotPriceAfterSwapExactTokenInForBPTOut = _derivativeSpotPriceAfterSwapExactTokenInForBPTOut;
 // PairType = 'token->BPT'
 // SwapType = 'swapExactOut'
 function _derivativeSpotPriceAfterSwapTokenInForExactBPTOut(
@@ -305,8 +277,7 @@ function _derivativeSpotPriceAfterSwapTokenInForExactBPTOut(
         )
     );
 }
-exports._derivativeSpotPriceAfterSwapTokenInForExactBPTOut =
-    _derivativeSpotPriceAfterSwapTokenInForExactBPTOut;
+exports._derivativeSpotPriceAfterSwapTokenInForExactBPTOut = _derivativeSpotPriceAfterSwapTokenInForExactBPTOut;
 // PairType = 'BPT->token'
 // SwapType = 'swapExactIn'
 function _derivativeSpotPriceAfterSwapExactBPTInForTokenOut(
@@ -325,8 +296,7 @@ function _derivativeSpotPriceAfterSwapExactBPTInForTokenOut(
         )
     );
 }
-exports._derivativeSpotPriceAfterSwapExactBPTInForTokenOut =
-    _derivativeSpotPriceAfterSwapExactBPTInForTokenOut;
+exports._derivativeSpotPriceAfterSwapExactBPTInForTokenOut = _derivativeSpotPriceAfterSwapExactBPTInForTokenOut;
 // PairType = 'BPT->token'
 // SwapType = 'swapExactOut'
 function _derivativeSpotPriceAfterSwapBPTInForExactTokenOut(
@@ -349,5 +319,4 @@ function _derivativeSpotPriceAfterSwapBPTInForExactTokenOut(
         )
     );
 }
-exports._derivativeSpotPriceAfterSwapBPTInForExactTokenOut =
-    _derivativeSpotPriceAfterSwapBPTInForExactTokenOut;
+exports._derivativeSpotPriceAfterSwapBPTInForExactTokenOut = _derivativeSpotPriceAfterSwapBPTInForExactTokenOut;

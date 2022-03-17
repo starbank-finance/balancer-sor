@@ -1,15 +1,15 @@
 'use strict';
 var __awaiter =
     (this && this.__awaiter) ||
-    function (thisArg, _arguments, P, generator) {
+    function(thisArg, _arguments, P, generator) {
         function adopt(value) {
             return value instanceof P
                 ? value
-                : new P(function (resolve) {
+                : new P(function(resolve) {
                       resolve(value);
                   });
         }
-        return new (P || (P = Promise))(function (resolve, reject) {
+        return new (P || (P = Promise))(function(resolve, reject) {
             function fulfilled(value) {
                 try {
                     step(generator.next(value));
@@ -35,20 +35,6 @@ var __awaiter =
         });
     };
 Object.defineProperty(exports, '__esModule', { value: true });
-exports.setWrappedInfo =
-    exports.getWrappedInfo =
-    exports.WrapTypes =
-    exports.formatSwaps =
-    exports.EVMgetOutputAmountSwap =
-    exports.getDerivativeSpotPriceAfterSwap =
-    exports.getDerivativeSpotPriceAfterSwapForPath =
-    exports.getSpotPriceAfterSwap =
-    exports.getOutputAmountSwap =
-    exports.getSpotPriceAfterSwapForPath =
-    exports.getOutputAmountSwapForPath =
-    exports.getEffectivePriceSwapForPath =
-    exports.getHighestLimitAmountsForPaths =
-        void 0;
 const types_1 = require('./types');
 const bmath_1 = require('./bmath');
 const config_1 = require('./config');
@@ -381,8 +367,7 @@ function getDerivativeSpotPriceAfterSwapForPath(path, swapType, amount) {
         throw new Error('Path with more than 2 swaps not supported');
     }
 }
-exports.getDerivativeSpotPriceAfterSwapForPath =
-    getDerivativeSpotPriceAfterSwapForPath;
+exports.getDerivativeSpotPriceAfterSwapForPath = getDerivativeSpotPriceAfterSwapForPath;
 // TODO: Add cases for pairType = [BTP->token, token->BTP] and poolType = [weighted, stable]
 function getDerivativeSpotPriceAfterSwap(pool, poolPairData, swapType, amount) {
     let pairType = poolPairData.pairType;
@@ -544,8 +529,8 @@ function formatSwaps(
     if (swaps.length === 0) {
         return swapInfo;
     }
-    swaps.forEach((sequence) => {
-        sequence.forEach((swap) => {
+    swaps.forEach(sequence => {
+        sequence.forEach(swap => {
             if (swap.tokenIn === tokenIn)
                 tokenInDecimals = swap.tokenInDecimals;
             if (swap.tokenOut === tokenOut)
@@ -563,7 +548,7 @@ function formatSwaps(
          * of the previous swap to be used as the amount in of the current one.In such a scenario, `tokenIn` must equal the
          * previous swap's `tokenOut`.
          * */
-        swaps.forEach((sequence) => {
+        swaps.forEach(sequence => {
             sequence.forEach((swap, i) => {
                 let amountScaled = '0'; // amount will be 0 for second swap in multihop swap
                 if (i == 0) {
@@ -684,7 +669,7 @@ function formatSwaps(
 }
 exports.formatSwaps = formatSwaps;
 var WrapTypes;
-(function (WrapTypes) {
+(function(WrapTypes) {
     WrapTypes[(WrapTypes['None'] = 0)] = 'None';
     WrapTypes[(WrapTypes['ETH'] = 1)] = 'ETH';
     WrapTypes[(WrapTypes['stETH'] = 2)] = 'stETH';
@@ -697,7 +682,7 @@ function getWrappedInfo(
     chainId,
     swapAmount
 ) {
-    return __awaiter(this, void 0, void 0, function* () {
+    return __awaiter(this, void 0, void 0, function*() {
         // The Subgraph returns tokens in lower case format so we must match this
         tokenIn = tokenIn.toLowerCase();
         tokenOut = tokenOut.toLowerCase();
@@ -800,10 +785,9 @@ function setWrappedInfo(swapInfo, swapType, wrappedInfo, chainId) {
         swapInfo.returnAmount = swapInfo.returnAmount
             .div(wrappedInfo.tokenOut.rate)
             .dp(0);
-        swapInfo.returnAmountConsideringFees =
-            swapInfo.returnAmountConsideringFees
-                .div(wrappedInfo.tokenOut.rate)
-                .dp(0);
+        swapInfo.returnAmountConsideringFees = swapInfo.returnAmountConsideringFees
+            .div(wrappedInfo.tokenOut.rate)
+            .dp(0);
     }
     // SwapExactOut, stETH in, returnAmount us stETH amount in, returnAmountForSwaps is wstETH amount in
     if (
@@ -813,10 +797,9 @@ function setWrappedInfo(swapInfo, swapType, wrappedInfo, chainId) {
         swapInfo.returnAmount = swapInfo.returnAmount
             .div(wrappedInfo.tokenIn.rate)
             .dp(0);
-        swapInfo.returnAmountConsideringFees =
-            swapInfo.returnAmountConsideringFees
-                .div(wrappedInfo.tokenIn.rate)
-                .dp(0);
+        swapInfo.returnAmountConsideringFees = swapInfo.returnAmountConsideringFees
+            .div(wrappedInfo.tokenIn.rate)
+            .dp(0);
     }
     return swapInfo;
 }
