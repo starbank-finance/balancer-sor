@@ -44,7 +44,7 @@ export const SUBGRAPH_URLS = {
     [Network.POLYGON]:
         'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2',
     [Network.ASTAR]:
-        'https://graph-node1.starbank.finance/subgraphs/name/starbank-finance/balancer-v2',
+        'https://graph-node1.starbank.finance/subgraphs/name/starbank-finance/balancer-v2-new',
 };
 
 export const ADDRESSES = {
@@ -539,16 +539,25 @@ async function makeRelayerTrade(
             userData: swapInfo.swaps[0].userData,
         };
 
-        let limit = swapInfo.returnAmountFromSwaps.times(1.01).dp(0).toString(); // Max In
+        let limit = swapInfo.returnAmountFromSwaps
+            .times(1.01)
+            .dp(0)
+            .toString(); // Max In
         if (swapType === SwapTypes.SwapExactIn)
-            limit = swapInfo.returnAmountFromSwaps.times(0.99).dp(0).toString(); // Min return
+            limit = swapInfo.returnAmountFromSwaps
+                .times(0.99)
+                .dp(0)
+                .toString(); // Min return
 
         let tx = await relayerContract
             .connect(wallet)
             .callStatic.swap(single, funds, limit, deadline, overRides);
         console.log(tx.toString());
         console.log(
-            swapInfo.returnAmountFromSwaps.times(1.01).dp(0).toString()
+            swapInfo.returnAmountFromSwaps
+                .times(1.01)
+                .dp(0)
+                .toString()
         );
     } else {
         let tx = await relayerContract
