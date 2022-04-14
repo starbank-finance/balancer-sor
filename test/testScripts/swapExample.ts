@@ -44,7 +44,8 @@ export const SUBGRAPH_URLS = {
     [Network.POLYGON]:
         'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-polygon-v2',
     [Network.ASTAR]:
-        'https://graph-node1.starbank.finance/subgraphs/name/starbank-finance/balancer-v2-new',
+        // 'https://graph-node1.starbank.finance/subgraphs/name/starbank-finance/balancer-v2-new',
+        'https://graph-node1.starbank.finance/subgraphs/name/starbank-finance/balancer2',
 };
 
 export const ADDRESSES = {
