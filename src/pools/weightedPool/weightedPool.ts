@@ -9,7 +9,6 @@ import { isSameAddress } from '../../utils';
 import {
     PoolBase,
     PoolTypes,
-    SwapPairType,
     PoolPairBase,
     SwapTypes,
     SubgraphPoolBase,
@@ -26,6 +25,7 @@ import {
 } from './weightedMath';
 import { BigNumber, formatFixed, parseFixed } from '@ethersproject/bignumber';
 import { WeiPerEther as ONE } from '@ethersproject/constants';
+import { takeToPrecision18 } from '../../router/helpersClass';
 
 export type WeightedPoolToken = Pick<
     NoNullableField<SubgraphToken>,
@@ -39,7 +39,6 @@ export type WeightedPoolPairData = PoolPairBase & {
 
 export class WeightedPool implements PoolBase {
     poolType: PoolTypes = PoolTypes.Weighted;
-    swapPairType: SwapPairType;
     id: string;
     address: string;
     swapFee: BigNumber;
@@ -83,10 +82,6 @@ export class WeightedPool implements PoolBase {
         this.tokens = tokens;
         this.tokensList = tokensList;
         this.totalWeight = parseFixed(totalWeight, 18);
-    }
-
-    setTypeForSwap(type: SwapPairType): void {
-        this.swapPairType = type;
     }
 
     parsePoolPairData(tokenIn: string, tokenOut: string): WeightedPoolPairData {
@@ -188,22 +183,23 @@ export class WeightedPool implements PoolBase {
         amount: OldBigNumber
     ): OldBigNumber {
         if (amount.isNaN()) return amount;
+        const balanceIn = poolPairData.balanceIn;
+        const balanceOut = poolPairData.balanceOut;
+        const decimalsIn = poolPairData.decimalsIn;
+        const decimalsOut = poolPairData.decimalsOut;
 
         try {
             const amt = _calcOutGivenIn(
-                poolPairData.balanceIn.toBigInt(),
+                takeToPrecision18(balanceIn, decimalsIn).toBigInt(),
                 poolPairData.weightIn.toBigInt(),
-                poolPairData.balanceOut.toBigInt(),
+                takeToPrecision18(balanceOut, decimalsOut).toBigInt(),
                 poolPairData.weightOut.toBigInt(),
-                parseFixed(
-                    amount.dp(poolPairData.decimalsIn, 1).toString(),
-                    poolPairData.decimalsIn
-                ).toBigInt(),
+                parseFixed(amount.dp(18, 1).toString(), 18).toBigInt(),
                 poolPairData.swapFee.toBigInt()
             );
             // return human scaled
             const amtOldBn = bnum(amt.toString());
-            return scale(amtOldBn, -poolPairData.decimalsOut);
+            return scale(amtOldBn, -18);
         } catch (err) {
             return ZERO;
         }
@@ -218,22 +214,22 @@ export class WeightedPool implements PoolBase {
         amount: OldBigNumber
     ): OldBigNumber {
         if (amount.isNaN()) return amount;
-
+        const balanceIn = poolPairData.balanceIn;
+        const balanceOut = poolPairData.balanceOut;
+        const decimalsIn = poolPairData.decimalsIn;
+        const decimalsOut = poolPairData.decimalsOut;
         try {
             const amt = _calcInGivenOut(
-                poolPairData.balanceIn.toBigInt(),
+                takeToPrecision18(balanceIn, decimalsIn).toBigInt(),
                 poolPairData.weightIn.toBigInt(),
-                poolPairData.balanceOut.toBigInt(),
+                takeToPrecision18(balanceOut, decimalsOut).toBigInt(),
                 poolPairData.weightOut.toBigInt(),
-                parseFixed(
-                    amount.dp(poolPairData.decimalsOut, 1).toString(),
-                    poolPairData.decimalsOut
-                ).toBigInt(),
+                parseFixed(amount.dp(18, 1).toString(), 18).toBigInt(),
                 poolPairData.swapFee.toBigInt()
             );
             // return human scaled
             const amtOldBn = bnum(amt.toString());
-            return scale(amtOldBn, -poolPairData.decimalsIn);
+            return scale(amtOldBn, -18);
         } catch (err) {
             return ZERO;
         }

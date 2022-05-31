@@ -7,10 +7,10 @@ import {
     SwapTypes,
     SubgraphPoolBase,
     SorConfig,
+    SwapOptions,
+    PoolFilter,
 } from '../src';
 import {
-    filterPoolsOfInterest,
-    filterHopPools,
     parseToPoolsDict,
     getBoostedPaths,
 } from '../src/routeProposal/filtering';
@@ -36,13 +36,16 @@ import {
     AAVE_USDT,
     sorConfigTestBoosted,
     bbaUSD,
+    FEI,
 } from './lib/constants';
 
 // Multiple boosted pools
 import boostedPools from './testData/boostedPools/multipleBoosted.json';
+import genericBoostedPools from './testData/boostedPools/genericBoosted.json';
 import { BigNumber, parseFixed } from '@ethersproject/bignumber';
 import { getOutputAmountSwapForPath } from '../src/router/helpersClass';
 import { JsonRpcProvider } from '@ethersproject/providers';
+import { RouteProposer } from '../src/routeProposal';
 
 const maxPools = 10;
 describe('multiple boosted pools, path creation test', () => {
@@ -410,8 +413,38 @@ describe('multiple boosted pools, path creation test', () => {
     });
 });
 
-// The following code has been tested to detect duplicate paths
-// when paths are created by filterHopPools and getBoostedPaths without "removeShortPaths"
+describe('generic boosted pools, path creation test', () => {
+    context('using only one boosted phantom stable', () => {
+        it('FEI-DAI', () => {
+            const tokenIn = FEI.address;
+            const tokenOut = DAI.address;
+            const [paths, , boostedPaths] = getPaths(
+                tokenIn,
+                tokenOut,
+                SwapTypes.SwapExactIn,
+                genericBoostedPools.pools,
+                maxPools,
+                sorConfigTestBoosted
+            );
+            const bbfFEIAddress = '0x0000000000000000000000000000000000111111';
+            const bbfDAIAddress = '0x0000000000000000000000000000000000000000';
+            const tokensChains = [
+                [FEI.address, bbfFEIAddress, bbfDAIAddress, DAI.address],
+            ];
+            const poolsChains = [
+                ['FuseLinearFei', 'bbfUSD-Pool', 'FuseLinearDai'],
+            ];
+            for (let i = 0; i < 1; i++) {
+                assert.isTrue(
+                    simpleCheckPath(paths[i], poolsChains[i], tokensChains[i])
+                );
+            }
+            assert.equal(boostedPaths.length, 1);
+            assert.equal(paths.length, 1);
+        });
+    });
+});
+
 function checkNoDuplicate(paths: NewPath[]): boolean {
     const n = paths.length;
     for (let i = 0; i < n; i++) {
@@ -431,25 +464,25 @@ function getPaths(
     config: SorConfig
 ): [NewPath[], PoolDictionary, NewPath[]] {
     const poolsAll = parseToPoolsDict(cloneDeep(pools), 0);
+    const routeProposer = new RouteProposer(config);
+    const swapOptions: SwapOptions = {
+        gasPrice: BigNumber.from(0),
+        swapGas: BigNumber.from(0),
+        timestamp: 0,
+        maxPools: 10,
+        poolTypeFilter: PoolFilter.All,
+        forceRefresh: true,
+    };
 
-    const [poolsFilteredDict, hopTokens] = filterPoolsOfInterest(
-        poolsAll,
+    const paths = routeProposer.getCandidatePaths(
         tokenIn,
         tokenOut,
-        maxPools
-    );
-
-    let pathData: NewPath[] = [];
-    [, pathData] = filterHopPools(
-        tokenIn,
-        tokenOut,
-        hopTokens,
-        poolsFilteredDict
+        swapType,
+        pools,
+        swapOptions
     );
 
     const boostedPaths = getBoostedPaths(tokenIn, tokenOut, poolsAll, config);
-    pathData = pathData.concat(boostedPaths);
-    const [paths] = calculatePathLimits(pathData, swapType);
     return [paths, poolsAll, boostedPaths];
 }
 
