@@ -1,86 +1,44 @@
-'use strict';
-var __awaiter =
-    (this && this.__awaiter) ||
-    function(thisArg, _arguments, P, generator) {
-        function adopt(value) {
-            return value instanceof P
-                ? value
-                : new P(function(resolve) {
-                      resolve(value);
-                  });
-        }
-        return new (P || (P = Promise))(function(resolve, reject) {
-            function fulfilled(value) {
-                try {
-                    step(generator.next(value));
-                } catch (e) {
-                    reject(e);
-                }
-            }
-            function rejected(value) {
-                try {
-                    step(generator['throw'](value));
-                } catch (e) {
-                    reject(e);
-                }
-            }
-            function step(result) {
-                result.done
-                    ? resolve(result.value)
-                    : adopt(result.value).then(fulfilled, rejected);
-            }
-            step(
-                (generator = generator.apply(thisArg, _arguments || [])).next()
-            );
-        });
-    };
-Object.defineProperty(exports, '__esModule', { value: true });
-const address_1 = require('@ethersproject/address');
-const contracts_1 = require('@ethersproject/contracts');
-const solidity_1 = require('@ethersproject/solidity');
-const bignumber_1 = require('./utils/bignumber');
-const bmath_1 = require('./bmath');
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getCostOutputToken = exports.calculateTotalSwapCost = exports.getTokenWeiPrice = exports.getOnChainReserves = exports.getAddress = void 0;
+const address_1 = require("@ethersproject/address");
+const contracts_1 = require("@ethersproject/contracts");
+const solidity_1 = require("@ethersproject/solidity");
+const bignumber_1 = require("./utils/bignumber");
+const bmath_1 = require("./bmath");
 // const FACTORY_ADDRESS = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f';
 // ArthSwap's Factory Address
 const FACTORY_ADDRESS = '0xA9473608514457b4bF083f9045fA63ae5810A03E';
 // ArthSwap's INIT_CODE_HASH
-const INIT_CODE_HASH =
-    '0x613b36de6401276e4d938ad0db4063490e66bb3ab2e4aec17cab78a15ea7a0b6';
+const INIT_CODE_HASH = '0x613b36de6401276e4d938ad0db4063490e66bb3ab2e4aec17cab78a15ea7a0b6';
 function getAddress(tokenA, tokenB) {
-    const tokens =
-        tokenA.toLowerCase() < tokenB.toLowerCase()
-            ? [tokenA, tokenB]
-            : [tokenB, tokenA];
-    let address = address_1.getCreate2Address(
-        FACTORY_ADDRESS,
-        solidity_1.keccak256(
-            ['bytes'],
-            [solidity_1.pack(['address', 'address'], [tokens[0], tokens[1]])]
-        ),
-        INIT_CODE_HASH
-    );
+    const tokens = tokenA.toLowerCase() < tokenB.toLowerCase()
+        ? [tokenA, tokenB]
+        : [tokenB, tokenA];
+    let address = (0, address_1.getCreate2Address)(FACTORY_ADDRESS, (0, solidity_1.keccak256)(['bytes'], [(0, solidity_1.pack)(['address', 'address'], [tokens[0], tokens[1]])]), INIT_CODE_HASH);
     return address;
 }
 exports.getAddress = getAddress;
 function getOnChainReserves(PairAddr, provider) {
-    return __awaiter(this, void 0, void 0, function*() {
+    return __awaiter(this, void 0, void 0, function* () {
         const uniswapV2PairAbi = require('./abi/UniswapV2Pair.json');
-        const pairContract = new contracts_1.Contract(
-            PairAddr,
-            uniswapV2PairAbi,
-            provider
-        );
-        let [
-            reserve0,
-            reserve1,
-            blockTimestamp,
-        ] = yield pairContract.getReserves();
+        const pairContract = new contracts_1.Contract(PairAddr, uniswapV2PairAbi, provider);
+        let [reserve0, reserve1, blockTimestamp] = yield pairContract.getReserves();
         return [reserve0, reserve1];
     });
 }
 exports.getOnChainReserves = getOnChainReserves;
 function getTokenWeiPrice(TokenAddr, provider) {
-    return __awaiter(this, void 0, void 0, function*() {
+    return __awaiter(this, void 0, void 0, function* () {
         // const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
         const WETH = '0xAeaaf0e2c81Af264101B9129C00F4440cCF0F720';
         if (TokenAddr.toLowerCase() === WETH.toLowerCase())
@@ -95,39 +53,29 @@ function getTokenWeiPrice(TokenAddr, provider) {
 }
 exports.getTokenWeiPrice = getTokenWeiPrice;
 function calculateTotalSwapCost(TokenPrice, SwapCost, GasPriceWei) {
-    return GasPriceWei.times(SwapCost)
-        .times(TokenPrice)
-        .div(bmath_1.BONE);
+    return GasPriceWei.times(SwapCost).times(TokenPrice).div(bmath_1.BONE);
 }
 exports.calculateTotalSwapCost = calculateTotalSwapCost;
-function getCostOutputToken(
-    TokenAddr,
-    GasPriceWei,
-    SwapGasCost,
-    Provider,
-    ChainId = undefined
-) {
-    return __awaiter(this, void 0, void 0, function*() {
+function getCostOutputToken(TokenAddr, GasPriceWei, SwapGasCost, Provider, ChainId = undefined) {
+    return __awaiter(this, void 0, void 0, function* () {
         if (!ChainId) {
             let network = yield Provider.getNetwork();
             ChainId = network.chainId;
         }
         // If not mainnet return 0 as UniSwap price unlikely to be correct?
         // Provider can be used to fetch token data (i.e. Decimals) via UniSwap SDK when Ethers V5 is used
-        if (ChainId !== 1) return new bignumber_1.BigNumber(0);
+        if (ChainId !== 1)
+            return new bignumber_1.BigNumber(0);
         let tokenPrice = new bignumber_1.BigNumber(0);
         try {
             tokenPrice = yield getTokenWeiPrice(TokenAddr, Provider);
-        } catch (err) {
+        }
+        catch (err) {
             // console.log(err)
             // If no pool for provided address (or addr incorrect) then default to 0
             console.log('Error Getting Token Price. Defaulting to 0.');
         }
-        let costOutputToken = calculateTotalSwapCost(
-            tokenPrice,
-            SwapGasCost,
-            GasPriceWei
-        );
+        let costOutputToken = calculateTotalSwapCost(tokenPrice, SwapGasCost, GasPriceWei);
         return costOutputToken;
     });
 }

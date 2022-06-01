@@ -1,6 +1,7 @@
-'use strict';
-Object.defineProperty(exports, '__esModule', { value: true });
-const bignumber_1 = require('./utils/bignumber');
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.VAULTADDR = exports.MULTIADDR = exports.WETHADDR = exports.EMPTY_SWAPINFO = void 0;
+const bignumber_1 = require("./utils/bignumber");
 const Zero = new bignumber_1.BigNumber(0);
 exports.EMPTY_SWAPINFO = {
     tokenAddresses: [],
@@ -37,5 +38,5 @@ exports.VAULTADDR = {
     42: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
     137: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
     42161: '0xBA12222222228d8Ba445958a75a0704d566BF2C8',
-    592: '0x7Cd0C38850A3AaBb773311AAAADA3444D31DCE03',
+    592: '0x18df7884DEa0B24334800C8b05763112Eb592ce0',
 };

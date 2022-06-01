@@ -5,7 +5,8 @@ const SUBGRAPH_URL =
     // 'https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-kovan-v2';
     // 'https://graph-node1.starbank.finance/subgraphs/name/starbank-finance/balancer-v2-new';
     // 'http://graph.starbank.finance/subgraphs/name/starbank-finance/balancer-v2';
-    'https://graph-node1.starbank.finance/subgraphs/name/starbank-finance/balancer2';
+    // 'https://graph-node1.starbank.finance/subgraphs/name/starbank-finance/balancer2';
+    'https://graph.starbank-finance.com/subgraphs/name/starbank-finance/balancer-v2';
 
 // Returns all public pools
 export async function fetchSubgraphPools(SubgraphUrl: string = '') {
